@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rail Focus - Japan</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;700&family=Noto+Sans+TC:wght@300;400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Noto Sans JP', 'Noto Sans TC', sans-serif; background-color: #f3f4f6; }
+        .train-font { font-family: 'Roboto Mono', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        #map { height: 100%; width: 100%; z-index: 0; }
+        .seat { transition: all 0.2s; }
+        .seat:hover:not(.taken) { transform: scale(1.1); }
+        #controls-panel { transition: transform 0.3s ease-in-out, height 0.3s ease-in-out; }
+        .route-card.selected { border-color: #0d9488; background-color: #f0fdfa; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        /* Categories */
+        .category-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            padding: 12px 0 8px 0;
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+            margin-bottom: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .category-header:hover { color: #0f766e; }
+        .category-content { display: block; }
+        .category-content.hidden { display: none; }
+
+        /* Train Image Styling */
+        .train-thumb { 
+            width: 60px; 
+            height: 60px; 
+            object-fit: contain; 
+            background-color: #f8fafc; 
+            border-radius: 6px; 
+            border: 1px solid #e2e8f0;
+        }
+        .train-hero { 
+            width: 100%; 
+            height: 180px; 
+            object-fit: contain; 
+            background-color: #f1f5f9; 
+            border-radius: 8px; 
+            margin-bottom: 12px; 
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); 
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Custom Map Marker Pulse */
+        .train-marker-container {
+            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+        @keyframes pulse-ring {
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(13, 148, 136, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+        }
+
+        /* Car Selector */
+        .car-tab {
+            flex-shrink: 0;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .car-tab.active {
+            background-color: #0f766e;
+            color: white;
+            border-color: #0f766e;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+        }
+        .car-tab .car-num { font-size: 1.1rem; font-weight: bold; line-height: 1; }
+        .car-tab .car-type { font-size: 0.6rem; margin-top: 2px; }
+
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
+        <div class="flex items-center gap-3">
+            <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
+            <h1 class="font-bold text-lg tracking-wide" id="app-title">RAIL FOCUS</h1>
+        </div>
+        <div class="flex items-center gap-3">
+            <select id="lang-select" onchange="app.setLanguage(this.value)" class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 focus:outline-none focus:border-teal-500">
+                <option value="en">English</option>
+                <option value="tc">繁體中文</option>
+                <option value="ja">日本語</option>
+            </select>
+            <button onclick="app.toggleHistory()" class="text-sm hover:text-teal-300 transition flex items-center">
+                <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline" id="nav-history">Travel Log</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-1 relative overflow-hidden w-full h-full">
+        <div id="map" class="absolute inset-0"></div>
+        
+        <div id="map-overlay" class="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg z-[40] hidden md:block pointer-events-none">
+            <div class="text-xs font-bold text-slate-500 uppercase" id="lbl-current-loc">Current Location</div>
+            <div id="current-loc-text" class="text-sm font-mono">Select a route...</div>
+        </div>
+
+        <div id="controls-panel" class="absolute bg-white shadow-2xl z-50 flex flex-col
+            w-full h-[60vh] bottom-0 rounded-t-2xl border-t border-slate-200
+            md:w-96 md:h-full md:top-0 md:left-0 md:rounded-none md:border-r md:border-t-0">
+            
+            <div class="w-full flex justify-center pt-3 pb-1 md:hidden">
+                <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+            </div>
+
+            <div class="relative flex-1 overflow-hidden">
+
+                <!-- View: Route Selection -->
+                <div id="view-route" class="flex flex-col h-full p-6 absolute inset-0 bg-white transition-transform duration-300">
+                    <h2 class="text-xl md:text-2xl font-bold mb-1 text-slate-800" id="lbl-select-route">Select Route</h2>
+                    <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc">Choose your line and stations.</p>
+
+                    <!-- Route List -->
+                    <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-48" id="route-list">
+                        <!-- Routes injected here -->
+                    </div>
+
+                    <!-- Station Selector -->
+                    <div id="route-confirm-container" class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl">
+                        
+                        <!-- Back Button Header -->
+                        <div class="flex justify-between items-center mb-2">
+                            <button onclick="app.cancelRouteSelection()" class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition">
+                                <i class="fa-solid fa-chevron-down mr-1"></i> 
+                                <span class="text-xs font-bold" id="lbl-back-route">Back</span>
+                            </button>
+                        </div>
+
+                        <div id="selected-train-display" class="hidden">
+                            <img id="train-hero-img" src="" class="train-hero" alt="Train Model">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">Model: <span id="train-model-name" class="text-slate-800"></span></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-service">Train Service</label>
+                            <select id="service-type" onchange="app.updateRouteSegment()" class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3 mb-4">
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-depart">Depart</label>
+                                <select id="station-start" onchange="app.updateRouteSegment()" class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-arrive">Arrive</label>
+                                <select id="station-end" onchange="app.updateRouteSegment()" class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-4 px-1">
+                            <div class="text-xs text-slate-500" id="lbl-est-time">Estimated Time</div>
+                            <div id="segment-time" class="font-mono font-bold text-lg text-teal-600">-- min</div>
+                        </div>
+
+                        <button onclick="app.confirmRoute()" class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2">
+                            <span id="btn-board">Board Train</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- View: Seat Selection -->
+                <div id="view-seat" class="flex flex-col h-full p-6 absolute inset-0 bg-white translate-x-full transition-transform duration-300">
+                    <div class="flex items-center mb-2">
+                        <button onclick="app.goBackToRoutes()" class="mr-4 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-arrow-left"></i></button>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
+                    </div>
+                    
+                    <!-- Car Selection Strip -->
+                    <div class="flex gap-2 overflow-x-auto pb-2 mb-2" id="car-list-container">
+                        <!-- Cars injected JS -->
+                    </div>
+                    
+                    <p class="text-slate-500 text-sm mb-2" id="lbl-car-info">Car 1 - Ordinary</p>
+
+                    <div class="flex-1 flex flex-col overflow-hidden">
+                        <div class="flex-1 flex justify-center items-start bg-slate-50 rounded-lg border border-slate-200 p-4 overflow-y-auto">
+                            <div id="seat-grid" class="grid gap-y-3">
+                                <!-- Seats injected here -->
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <div class="flex justify-between text-xs text-slate-400 mb-3">
+                                <span class="flex items-center"><div class="w-3 h-3 bg-white border border-slate-300 rounded mr-2"></div> <span id="lbl-avail">Avail</span></span>
+                                <span class="flex items-center"><div class="w-3 h-3 bg-teal-500 rounded mr-2"></div> <span id="lbl-you">You</span></span>
+                                <span class="flex items-center"><div class="w-3 h-3 bg-slate-300 opacity-50 rounded mr-2"></div> <span id="lbl-taken">Taken</span></span>
+                            </div>
+                            <button id="confirm-seat-btn" disabled onclick="app.startFocus()" class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                <span id="btn-start-focus">Start Focus</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View: Focus Mode -->
+                <div id="view-focus" class="flex flex-col h-full p-6 absolute inset-0 bg-white translate-x-full transition-transform duration-300">
+                    <div class="flex-1 flex flex-col items-center justify-center text-center">
+                        <div class="text-teal-600 mb-4 animate-pulse">
+                            <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
+                        </div>
+                        <h3 class="text-slate-500 uppercase tracking-widest text-xs mb-2" id="lbl-next-station">Next Station</h3>
+                        <h2 id="next-station-display" class="text-2xl font-bold mb-6 text-slate-800">--</h2>
+
+                        <div class="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
+                            <div class="text-center">
+                                <div id="timer-display" class="text-3xl md:text-4xl font-bold train-font text-slate-800">00:00</div>
+                                <div class="text-xs text-slate-400 mt-1" id="lbl-remaining">Remaining</div>
+                            </div>
+                        </div>
+
+                        <div class="w-full bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
+                            <div id="progress-bar" class="bg-teal-500 h-2 rounded-full transition-all duration-75 ease-linear" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between w-full text-xs text-slate-400 font-mono">
+                            <span id="distance-traveled">0 km</span>
+                            <span id="distance-total">100 km</span>
+                        </div>
+                    </div>
+
+                    <button onclick="app.abandonTrip()" class="mt-4 text-red-400 hover:text-red-600 text-sm underline" id="btn-stop">Emergency Stop (Quit)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Modal -->
+        <div id="history-modal" class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
+                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="font-bold text-lg" id="lbl-travel-log">Travel Log</h3>
+                    <button onclick="app.toggleHistory()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="history-list" class="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-1"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        // --- Utilities ---
+        function smoothPolyline(path, iterations = 3) {
+            if (iterations === 0) return path;
+            const newPath = [path[0]];
+            for (let i = 0; i < path.length - 1; i++) {
+                const p0 = path[i], p1 = path[i+1];
+                newPath.push([0.75 * p0[0] + 0.25 * p1[0], 0.75 * p0[1] + 0.25 * p1[1]]);
+                newPath.push([0.25 * p0[0] + 0.75 * p1[0], 0.25 * p0[1] + 0.75 * p1[1]]);
+            }
+            newPath.push(path[path.length-1]);
+            return smoothPolyline(newPath, iterations - 1);
+        }
+        function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+            var R = 6371; 
+            var dLat = deg2rad(lat2-lat1);
+            var dLon = deg2rad(lon2-lon1); 
+            var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon/2) * Math.sin(dLon/2); 
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+        function deg2rad(deg) { return deg * (Math.PI/180) }
+        function getPathLength(path) {
+            let total = 0;
+            for(let i=0; i<path.length-1; i++) {
+                total += getDistanceFromLatLonInKm(path[i][0], path[i][1], path[i+1][0], path[i+1][1]);
+            }
+            return total;
+        }
+
+        // --- Localization Data ---
+        const TRANSLATIONS = {
+            en: {
+                appTitle: "RAIL FOCUS", navHistory: "Travel Log", currentLoc: "Current Location",
+                selectRoute: "Select Route", selectRouteDesc: "Choose your line and stations.",
+                service: "Train Service", depart: "Depart", arrive: "Arrive", estTime: "Estimated Time",
+                board: "Board Train", selectSeat: "Select Seat", carInfo: "Car",
+                avail: "Avail", you: "You", taken: "Taken", startFocus: "Start Focus",
+                nextStation: "Next Station", remaining: "Remaining", stop: "Emergency Stop (Quit)",
+                travelLog: "Travel Log", catGrand: "Grand Tour (Through Routes)", catWest: "West Japan (Tokaido/Sanyo/Kyushu)",
+                catEast: "East Japan (Tohoku/Akita/Yamagata)", catNorth: "Hokkaido", catCentral: "Central Japan (Hokuriku/Joetsu)",
+                backRoute: "Back to Routes", arrived: "Arrived! Journey Complete.", confirmStop: "Stop Focus Session?",
+                ord: "Ord", grn: "Grn", res: "Res", unres: "Unres"
+            },
+            tc: {
+                appTitle: "鐵路專注", navHistory: "乘車記錄", currentLoc: "目前位置",
+                selectRoute: "選擇路線", selectRouteDesc: "選擇新幹線路線及車站",
+                service: "列車班次", depart: "出發", arrive: "抵達", estTime: "預計時間",
+                board: "登車", selectSeat: "選擇座位", carInfo: "車廂",
+                avail: "可選", you: "已選", taken: "已佔", startFocus: "開始專注",
+                nextStation: "下一站", remaining: "剩餘時間", stop: "緊急停車 (退出)",
+                travelLog: "乘車記錄", catGrand: "日本縱貫 (直通運轉)", catWest: "西日本 (東海道/山陽/九州)",
+                catEast: "東日本 (東北/秋田/山形)", catNorth: "北海道", catCentral: "中日本 (北陸/上越)",
+                backRoute: "返回路線列表", arrived: "已抵達！旅程結束。", confirmStop: "停止專注？",
+                ord: "普通", grn: "綠色", res: "指定", unres: "自由"
+            },
+            ja: {
+                appTitle: "レイルフォーカス", navHistory: "乗車履歴", currentLoc: "現在地",
+                selectRoute: "路線選択", selectRouteDesc: "路線と駅を選択してください",
+                service: "列車種別", depart: "出発", arrive: "到着", estTime: "所要時間",
+                board: "乗車する", selectSeat: "座席指定", carInfo: "号車",
+                avail: "空席", you: "選択", taken: "満席", startFocus: "集中モード開始",
+                nextStation: "次の駅", remaining: "残り時間", stop: "緊急停止 (終了)",
+                travelLog: "乗車履歴", catGrand: "日本縦断 (直通運転)", catWest: "西日本 (東海道・山陽・九州)",
+                catEast: "東日本 (東北・秋田・山形)", catNorth: "北海道", catCentral: "中日本 (北陸・上越)",
+                backRoute: "路線一覧に戻る", arrived: "到着しました！お疲れ様でした。", confirmStop: "集中モードを終了しますか？",
+                ord: "普通", grn: "Ｇ車", res: "指定", unres: "自由"
+            }
+        };
+
+        // --- Base Routes Data ---
+        const TOKAIDO = {
+            id: 'tokaido',
+            names: { en: 'Tokaido Shinkansen', tc: '東海道新幹線', ja: '東海道新幹線' },
+            durationMinutes: 141, color: '#0074BE', 
+            desc: { en: 'Tokyo → Osaka', tc: '東京 → 大阪', ja: '東京 → 大阪' },
+            trainModel: { name: "N700S", image: "https://hufung.github.io/data/N700S.png" },
+            services: [
+                {names: {en:"Nozomi", tc:"希望號", ja:"のぞみ"}, multiplier: 1.0},
+                {names: {en:"Hikari", tc:"光號", ja:"ひかり"}, multiplier: 1.2},
+                {names: {en:"Kodama", tc:"回聲號", ja:"こだま"}, multiplier: 1.6}
+            ],
+            stations: [
+                {names: {en:"Tokyo", tc:"東京", ja:"東京"}, coord: [35.6812, 139.7671]},
+                {names: {en:"Shinagawa", tc:"品川", ja:"品川"}, coord: [35.6284, 139.7387]},
+                {names: {en:"Shin-Yokohama", tc:"新橫濱", ja:"新横浜"}, coord: [35.5075, 139.6175]},
+                {names: {en:"Odawara", tc:"小田原", ja:"小田原"}, coord: [35.2564, 139.1549]},
+                {names: {en:"Atami", tc:"熱海", ja:"熱海"}, coord: [35.1032, 139.0777]},
+                {names: {en:"Mishima", tc:"三島", ja:"三島"}, coord: [35.1277, 138.9106]},
+                {names: {en:"Shizuoka", tc:"靜岡", ja:"静岡"}, coord: [34.9717, 138.3888]},
+                {names: {en:"Hamamatsu", tc:"濱松", ja:"浜松"}, coord: [34.7038, 137.7349]},
+                {names: {en:"Toyohashi", tc:"豐橋", ja:"豊橋"}, coord: [34.7629, 137.3817]},
+                {names: {en:"Nagoya", tc:"名古屋", ja:"名古屋"}, coord: [35.1709, 136.8815]},
+                {names: {en:"Kyoto", tc:"京都", ja:"京都"}, coord: [34.9858, 135.7589]},
+                {names: {en:"Shin-Osaka", tc:"新大阪", ja:"新大阪"}, coord: [34.7336, 135.5003]}
+            ],
+            rawPath: [[35.6812, 139.7671],[35.6284, 139.7387],[35.5075, 139.6175],[35.2564, 139.1549],[35.1032, 139.0777],[35.1277, 138.9106],[35.1620, 138.6630],[34.9717, 138.3888],[34.7038, 137.7349],[34.7629, 137.3817],[35.1709, 136.8815],[35.3157, 136.6854],[35.3148, 136.2900],[34.9858, 135.7589],[34.7336, 135.5003]]
+        };
+
+        const SANYO = {
+            id: 'sanyo',
+            names: { en: 'Sanyo Shinkansen', tc: '山陽新幹線', ja: '山陽新幹線' },
+            durationMinutes: 148, color: '#0072bc', 
+            desc: { en: 'Osaka → Fukuoka', tc: '大阪 → 福岡', ja: '大阪 → 福岡' },
+            trainModel: { name: "N700A", image: "https://hufung.github.io/data/N700S.png" },
+            services: [
+                {names: {en:"Mizuho", tc:"瑞穗號", ja:"みずほ"}, multiplier: 1.0},
+                {names: {en:"Sakura", tc:"櫻號", ja:"さくら"}, multiplier: 1.15},
+                {names: {en:"Kodama", tc:"回聲號", ja:"こだま"}, multiplier: 1.8}
+            ],
+            stations: [
+                {names: {en:"Shin-Osaka", tc:"新大阪", ja:"新大阪"}, coord: [34.7336, 135.5003]},
+                {names: {en:"Shin-Kobe", tc:"新神戶", ja:"新神戸"}, coord: [34.7070, 135.1955]},
+                {names: {en:"Himeji", tc:"姬路", ja:"姫路"}, coord: [34.8276, 134.6939]},
+                {names: {en:"Okayama", tc:"岡山", ja:"岡山"}, coord: [34.6617, 133.9195]},
+                {names: {en:"Fukuyama", tc:"福山", ja:"福山"}, coord: [34.4886, 133.3616]},
+                {names: {en:"Hiroshima", tc:"廣島", ja:"広島"}, coord: [34.3977, 132.4753]},
+                {names: {en:"Shin-Yamaguchi", tc:"新山口", ja:"新山口"}, coord: [34.0920, 131.3940]},
+                {names: {en:"Kokura", tc:"小倉", ja:"小倉"}, coord: [33.8870, 130.8826]},
+                {names: {en:"Hakata", tc:"博多", ja:"博多"}, coord: [33.5897, 130.4207]}
+            ],
+            rawPath: [[34.7336, 135.5003],[34.7000, 135.1900],[34.8276, 134.6939],[34.6617, 133.9195],[34.3977, 132.4753],[34.1700, 131.9600],[34.0500, 131.8000],[34.1000, 131.4000],[33.9500, 130.9500],[33.8800, 130.8800],[33.5897, 130.4207]]
+        };
+
+        const KYUSHU = {
+            id: 'kyushu',
+            names: { en: 'Kyushu Shinkansen', tc: '九州新幹線', ja: '九州新幹線' },
+            durationMinutes: 76, color: '#dc2626', 
+            desc: { en: 'Fukuoka → Kagoshima', tc: '福岡 → 鹿兒島', ja: '福岡 → 鹿児島' },
+            trainModel: { name: "800 Series", image: "https://hufung.github.io/data/800.png" },
+            services: [
+                {names: {en:"Mizuho", tc:"瑞穗號", ja:"みずほ"}, multiplier: 1.0},
+                {names: {en:"Sakura", tc:"櫻號", ja:"さくら"}, multiplier: 1.1},
+                {names: {en:"Tsubame", tc:"燕號", ja:"つばめ"}, multiplier: 1.4}
+            ],
+            stations: [
+                {names: {en:"Hakata", tc:"博多", ja:"博多"}, coord: [33.5897, 130.4207]},
+                {names: {en:"Shin-Tosu", tc:"新鳥栖", ja:"新鳥栖"}, coord: [33.3726, 130.4932]},
+                {names: {en:"Kurume", tc:"久留米", ja:"久留米"}, coord: [33.3193, 130.5180]},
+                {names: {en:"Kumamoto", tc:"熊本", ja:"熊本"}, coord: [32.7895, 130.6884]},
+                {names: {en:"Sendai", tc:"川內", ja:"川内"}, coord: [31.8138, 130.3039]},
+                {names: {en:"Kagoshima-Chuo", tc:"鹿兒島中央", ja:"鹿児島中央"}, coord: [31.5856, 130.5412]}
+            ],
+            rawPath: [[33.5897, 130.4207],[33.3700, 130.4900],[33.2000, 130.4800],[32.7895, 130.6884],[32.5000, 130.6000],[31.8100, 130.3000],[31.5856, 130.5412]]
+        };
+
+        const TOHOKU = {
+            id: 'tohoku',
+            names: { en: 'Tohoku Shinkansen', tc: '東北新幹線', ja: '東北新幹線' },
+            durationMinutes: 179, color: '#22c55e', 
+            desc: { en: 'Tokyo → Aomori', tc: '東京 → 青森', ja: '東京 → 青森' },
+            trainModel: { name: "E5 Series", image: "https://hufung.github.io/data/E5.png" },
+            services: [
+                {names: {en:"Hayabusa", tc:"隼號", ja:"はやぶさ"}, multiplier: 1.0},
+                {names: {en:"Yamabiko", tc:"山彥號", ja:"やまびこ"}, multiplier: 1.3}
+            ],
+            stations: [
+                {names: {en:"Tokyo", tc:"東京", ja:"東京"}, coord: [35.6812, 139.7671]},
+                {names: {en:"Omiya", tc:"大宮", ja:"大宮"}, coord: [35.9063, 139.6240]},
+                {names: {en:"Utsunomiya", tc:"宇都宮", ja:"宇都宮"}, coord: [36.5590, 139.8985]},
+                {names: {en:"Koriyama", tc:"郡山", ja:"郡山"}, coord: [37.3987, 140.3885]},
+                {names: {en:"Fukushima", tc:"福島", ja:"福島"}, coord: [37.7546, 140.4596]},
+                {names: {en:"Sendai", tc:"仙臺", ja:"仙台"}, coord: [38.2601, 140.8824]},
+                {names: {en:"Ichinoseki", tc:"一之關", ja:"一ノ関"}, coord: [38.9264, 141.1387]},
+                {names: {en:"Morioka", tc:"盛岡", ja:"盛岡"}, coord: [39.7015, 141.1364]},
+                {names: {en:"Hachinohe", tc:"八戶", ja:"八戸"}, coord: [40.5095, 141.4310]},
+                {names: {en:"Shin-Aomori", tc:"新青森", ja:"新青森"}, coord: [40.8296, 140.6944]}
+            ],
+            rawPath: [[35.6812, 139.7671],[35.7140, 139.7741],[35.9063, 139.6240],[36.5551, 139.8979],[37.3900, 140.3800],[37.7500, 140.4600],[38.2601, 140.8824],[38.5000, 141.0000],[38.9000, 141.1500],[39.3000, 141.1200],[39.7015, 141.1364],[40.0000, 141.2500],[40.2700, 141.3000],[40.5100, 141.4200],[40.7200, 141.1500],[40.8296, 140.6944]]
+        };
+
+        const HOKKAIDO = {
+            id: 'hokkaido',
+            names: { en: 'Hokkaido Shinkansen', tc: '北海道新幹線', ja: '北海道新幹線' },
+            durationMinutes: 57, color: '#9333ea', 
+            desc: { en: 'Aomori → Hakodate', tc: '青森 → 函館', ja: '青森 → 函館' },
+            trainModel: { name: "H5 Series", image: "https://hufung.github.io/data/H5.png" },
+            services: [{names: {en:"Hayabusa", tc:"隼號", ja:"はやぶさ"}, multiplier: 1.0}],
+            stations: [
+                {names: {en:"Shin-Aomori", tc:"新青森", ja:"新青森"}, coord: [40.8296, 140.6944]},
+                {names: {en:"Okutsugaru-Imabetsu", tc:"奧津輕今別", ja:"奥津軽いまべつ"}, coord: [41.1400, 140.5100]},
+                {names: {en:"Kikonai", tc:"木古內", ja:"木古内"}, coord: [41.6780, 140.4340]},
+                {names: {en:"Shin-Hakodate-Hokuto", tc:"新函館北斗", ja:"新函館北斗"}, coord: [41.9050, 140.6476]}
+            ],
+            rawPath: [[40.8296, 140.6944],[40.9500, 140.6000],[41.1400, 140.5100],[41.2500, 140.3500],[41.3800, 140.2000],[41.5000, 140.1200],[41.6780, 140.4340],[41.8000, 140.5500],[41.9050, 140.6476]]
+        };
+
+        const HOKURIKU = {
+            id: 'hokuriku',
+            names: { en: 'Hokuriku Shinkansen', tc: '北陸新幹線', ja: '北陸新幹線' },
+            durationMinutes: 188, color: '#8b5cf6', 
+            desc: { en: 'Tokyo → Tsuruga', tc: '東京 → 敦賀', ja: '東京 → 敦賀' },
+            trainModel: { name: "E7/W7", image: "https://hufung.github.io/data/E7.png" },
+            services: [
+                {names: {en:"Kagayaki", tc:"光輝號", ja:"かがやき"}, multiplier: 1.0},
+                {names: {en:"Hakutaka", tc:"白鷹號", ja:"はくたか"}, multiplier: 1.25}
+            ],
+            stations: [
+                {names: {en:"Tokyo", tc:"東京", ja:"東京"}, coord: [35.6812, 139.7671]},
+                {names: {en:"Takasaki", tc:"高崎", ja:"高崎"}, coord: [36.3224, 139.0126]},
+                {names: {en:"Karuizawa", tc:"輕井澤", ja:"軽井沢"}, coord: [36.3435, 138.6357]},
+                {names: {en:"Nagano", tc:"長野", ja:"長野"}, coord: [36.6431, 138.1886]},
+                {names: {en:"Toyama", tc:"富山", ja:"富山"}, coord: [36.7014, 137.2132]},
+                {names: {en:"Kanazawa", tc:"金澤", ja:"金沢"}, coord: [36.5780, 136.6480]},
+                {names: {en:"Fukui", tc:"福井", ja:"福井"}, coord: [36.0621, 136.2232]},
+                {names: {en:"Tsuruga", tc:"敦賀", ja:"敦賀"}, coord: [35.6450, 136.0750]}
+            ],
+            rawPath: [[35.6812, 139.7671],[35.9063, 139.6240],[36.3224, 139.0126],[36.3435, 138.6357],[36.6431, 138.1886],[37.0500, 138.2500],[37.0400, 137.8600],[36.8500, 137.4500],[36.7000, 137.2100],[36.5780, 136.6480],[36.4000, 136.4500],[36.2000, 136.2500],[36.0600, 136.2200],[35.9000, 136.1800],[35.6450, 136.0750]]
+        };
+
+        const JOETSU = {
+            id: 'joetsu',
+            names: { en: 'Joetsu Shinkansen', tc: '上越新幹線', ja: '上越新幹線' },
+            durationMinutes: 89, color: '#f43f5e', 
+            desc: { en: 'Tokyo → Niigata', tc: '東京 → 新潟', ja: '東京 → 新潟' },
+            trainModel: { name: "E7 Series", image: "https://hufung.github.io/data/E7.png" },
+            services: [
+                {names: {en:"Toki", tc:"朱鷺號", ja:"とき"}, multiplier: 1.0},
+                {names: {en:"Tanigawa", tc:"谷川號", ja:"たにがわ"}, multiplier: 1.3}
+            ],
+            stations: [
+                {names: {en:"Tokyo", tc:"東京", ja:"東京"}, coord: [35.6812, 139.7671]},
+                {names: {en:"Takasaki", tc:"高崎", ja:"高崎"}, coord: [36.3224, 139.0126]},
+                {names: {en:"Echigo-Yuzawa", tc:"越後湯澤", ja:"越後湯沢"}, coord: [36.9357, 138.8098]},
+                {names: {en:"Nagaoka", tc:"長岡", ja:"長岡"}, coord: [37.4477, 138.8539]},
+                {names: {en:"Niigata", tc:"新潟", ja:"新潟"}, coord: [37.9020, 139.0600]}
+            ],
+            rawPath: [[35.6812, 139.7671],[35.9063, 139.6240],[36.3224, 139.0126],[36.6500, 139.0000],[36.9360, 138.8100],[37.4400, 138.8500],[37.9020, 139.0600]]
+        };
+
+        const AKITA = {
+            id: 'akita',
+            names: { en: 'Akita Shinkansen', tc: '秋田新幹線', ja: '秋田新幹線' },
+            durationMinutes: 85, color: '#ec4899', 
+            desc: { en: 'Morioka → Akita', tc: '盛岡 → 秋田', ja: '盛岡 → 秋田' },
+            trainModel: { name: "E6 Series", image: "https://hufung.github.io/data/E6.png" },
+            services: [{names: {en:"Komachi", tc:"小町號", ja:"こまち"}, multiplier: 1.0}],
+            stations: [
+                {names: {en:"Morioka", tc:"盛岡", ja:"盛岡"}, coord: [39.7015, 141.1364]},
+                {names: {en:"Kakunodate", tc:"角館", ja:"角館"}, coord: [39.5918, 140.5623]},
+                {names: {en:"Omagari", tc:"大曲", ja:"大曲"}, coord: [39.4656, 140.4802]},
+                {names: {en:"Akita", tc:"秋田", ja:"秋田"}, coord: [39.7169, 140.1264]}
+            ],
+            rawPath: [[39.7015, 141.1364],[39.7100, 140.9800],[39.7000, 140.7200],[39.5900, 140.5600],[39.4600, 140.4700],[39.7169, 140.1264]]
+        };
+
+        const YAMAGATA = {
+            id: 'yamagata',
+            names: { en: 'Yamagata Shinkansen', tc: '山形新幹線', ja: '山形新幹線' },
+            durationMinutes: 107, color: '#ea580c', 
+            desc: { en: 'Fukushima → Shinjo', tc: '福島 → 新庄', ja: '福島 → 新庄' },
+            trainModel: { name: "E3 Series", image: "https://hufung.github.io/data/E3.png" },
+            services: [{names: {en:"Tsubasa", tc:"翼號", ja:"つばさ"}, multiplier: 1.0}],
+            stations: [
+                {names: {en:"Fukushima", tc:"福島", ja:"福島"}, coord: [37.7500, 140.4600]},
+                {names: {en:"Yonezawa", tc:"米澤", ja:"米沢"}, coord: [37.9100, 140.1100]},
+                {names: {en:"Yamagata", tc:"山形", ja:"山形"}, coord: [38.2500, 140.3300]},
+                {names: {en:"Shinjo", tc:"新庄", ja:"新庄"}, coord: [38.7650, 140.3000]}
+            ],
+            rawPath: [[37.7500, 140.4600],[37.8200, 140.3000],[37.9100, 140.1100],[38.2500, 140.3300],[38.5500, 140.4000],[38.7650, 140.3000]]
+        };
+
+        const NISHI_KYUSHU = {
+            id: 'nishi_kyushu',
+            names: { en: 'Nishi-Kyushu Shinkansen', tc: '西九州新幹線', ja: '西九州新幹線' },
+            durationMinutes: 23, color: '#b91c1c', 
+            desc: { en: 'Takeo-Onsen → Nagasaki', tc: '武雄溫泉 → 長崎', ja: '武雄温泉 → 長崎' },
+            trainModel: { name: "N700S", image: "https://hufung.github.io/data/N700S.png" },
+            services: [{names: {en:"Kamome", tc:"海鷗號", ja:"かもめ"}, multiplier: 1.0}],
+            stations: [
+                {names: {en:"Takeo-Onsen", tc:"武雄溫泉", ja:"武雄温泉"}, coord: [33.1950, 130.0200]},
+                {names: {en:"Isahaya", tc:"諫早", ja:"諫早"}, coord: [32.8400, 130.0400]},
+                {names: {en:"Nagasaki", tc:"長崎", ja:"長崎"}, coord: [32.7520, 129.8700]}
+            ],
+            rawPath: [[33.1950, 130.0200],[33.0900, 129.9800],[32.8400, 130.0400],[32.7520, 129.8700]]
+        };
+
+        // --- Through-Routes ---
+        const TOKYO_HAKATA = {
+            id: 'tokyo_hakata',
+            names: { en: 'Tokyo → Hakata', tc: '東京 → 博多', ja: '東京 → 博多' },
+            desc: { en: 'Through Route', tc: '直通運轉', ja: '直通運転' },
+            durationMinutes: 290, color: '#0074BE',
+            trainModel: TOKAIDO.trainModel,
+            services: [{names: {en:"Nozomi", tc:"希望號", ja:"のぞみ"}, multiplier: 1.0}],
+            stations: [...TOKAIDO.stations, ...SANYO.stations.slice(1)],
+            rawPath: [...TOKAIDO.rawPath, ...SANYO.rawPath.slice(1)]
+        };
+
+        const TOKYO_KAGOSHIMA = {
+            id: 'tokyo_kagoshima',
+            names: { en: 'Tokyo → Kagoshima', tc: '東京 → 鹿兒島', ja: '東京 → 鹿児島' },
+            desc: { en: 'Full West Run', tc: '日本縱貫 (西)', ja: '日本縦断 (西)' },
+            durationMinutes: 400, color: '#0074BE',
+            trainModel: TOKAIDO.trainModel,
+            services: [{names: {en:"Relay", tc:"接力", ja:"リレー"}, multiplier: 1.1}],
+            stations: [...TOKAIDO.stations, ...SANYO.stations.slice(1), ...KYUSHU.stations.slice(1)],
+            rawPath: [...TOKAIDO.rawPath, ...SANYO.rawPath.slice(1), ...KYUSHU.rawPath.slice(1)]
+        };
+
+        const TOKYO_HAKODATE = {
+            id: 'tokyo_hakodate',
+            names: { en: 'Tokyo → Hakodate', tc: '東京 → 函館', ja: '東京 → 函館' },
+            desc: { en: 'North Run', tc: '北行', ja: '北行' },
+            durationMinutes: 240, color: '#22c55e',
+            trainModel: HOKKAIDO.trainModel,
+            services: [{names: {en:"Hayabusa", tc:"隼號", ja:"はやぶさ"}, multiplier: 1.0}],
+            stations: [...TOHOKU.stations, ...HOKKAIDO.stations.slice(1)],
+            rawPath: [...TOHOKU.rawPath, ...HOKKAIDO.rawPath.slice(1)]
+        };
+
+        const TOKYO_AKITA = {
+            id: 'tokyo_akita',
+            names: { en: 'Tokyo → Akita', tc: '東京 → 秋田', ja: '東京 → 秋田' },
+            desc: { en: 'Komachi Direct', tc: '小町號直通', ja: 'こまち直通' },
+            durationMinutes: 230, color: '#ec4899',
+            trainModel: AKITA.trainModel,
+            services: [{names: {en:"Komachi", tc:"小町號", ja:"こまち"}, multiplier: 1.0}],
+            stations: [...TOHOKU.stations.slice(0, -1), ...AKITA.stations.slice(1)], 
+            rawPath: [...TOHOKU.rawPath.slice(0, 11), ...AKITA.rawPath.slice(1)]
+        };
+
+        const RAW_ROUTES = [
+            TOKAIDO, SANYO, KYUSHU, TOHOKU, HOKKAIDO, HOKURIKU, JOETSU, AKITA, YAMAGATA, NISHI_KYUSHU,
+            TOKYO_HAKATA, TOKYO_KAGOSHIMA, TOKYO_HAKODATE, TOKYO_AKITA
+        ];
+
+        const ROUTES = RAW_ROUTES.map(r => ({ ...r, path: smoothPolyline(r.rawPath, 5) }));
+
+        // --- App Logic ---
+        class App {
+            constructor() {
+                this.state = {
+                    language: 'en',
+                    baseRoute: null,
+                    segmentPath: null,
+                    segmentDuration: 0,
+                    speedMultiplier: 1.0,
+                    selectedSeat: null,
+                    currentCar: 4, // Default car
+                    isFocusing: false,
+                    startTime: null,
+                    animationFrameId: null
+                };
+                this.map = null;
+                this.routeLayers = { border: null, main: null, dashed: null, marker: null };
+                this.initMap();
+                this.renderRoutes();
+                this.loadHistory();
+                this.setLanguage('en');
+            }
+
+            setLanguage(lang) {
+                this.state.language = lang;
+                document.getElementById('lang-select').value = lang; 
+                
+                const texts = TRANSLATIONS[lang];
+                document.getElementById('app-title').innerText = texts.appTitle;
+                document.getElementById('nav-history').innerText = texts.navHistory;
+                document.getElementById('lbl-current-loc').innerText = texts.currentLoc;
+                document.getElementById('lbl-select-route').innerText = texts.selectRoute;
+                document.getElementById('lbl-select-route-desc').innerText = texts.selectRouteDesc;
+                document.getElementById('lbl-service').innerText = texts.service;
+                document.getElementById('lbl-depart').innerText = texts.depart;
+                document.getElementById('lbl-arrive').innerText = texts.arrive;
+                document.getElementById('lbl-est-time').innerText = texts.estTime;
+                document.getElementById('btn-board').innerText = texts.board;
+                document.getElementById('lbl-select-seat').innerText = texts.selectSeat;
+                this.updateCarInfoLabel(); // Updated dynamic label
+                document.getElementById('lbl-avail').innerText = texts.avail;
+                document.getElementById('lbl-you').innerText = texts.you;
+                document.getElementById('lbl-taken').innerText = texts.taken;
+                document.getElementById('btn-start-focus').innerText = texts.startFocus;
+                document.getElementById('lbl-next-station').innerText = texts.nextStation;
+                document.getElementById('lbl-remaining').innerText = texts.remaining;
+                document.getElementById('btn-stop').innerText = texts.stop;
+                document.getElementById('lbl-travel-log').innerText = texts.travelLog;
+                document.getElementById('lbl-back-route').innerText = texts.backRoute;
+
+                this.renderRoutes();
+                if (this.state.baseRoute) this.renderSelectors(this.state.baseRoute);
+                if (this.state.isFocusing) this.updateFocusText();
+                
+                // Rerender seat selector components for lang change
+                if(!document.getElementById('view-seat').classList.contains('translate-x-full')) {
+                     this.renderCarSelector();
+                }
+            }
+
+            initMap() {
+                this.map = L.map('map', { zoomControl: false }).setView([36.2048, 138.2529], 5);
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; OpenStreetMap, &copy; CartoDB',
+                    maxZoom: 19
+                }).addTo(this.map);
+            }
+
+            // --- Train Marker Logic ---
+            createTrainIcon(url) {
+                return L.divIcon({
+                    className: 'train-marker-container', // Add animation class
+                    html: `<div class="w-12 h-12 rounded-full border-2 border-white shadow-lg overflow-hidden bg-white relative">
+                            <img src="${url}" class="w-full h-full object-contain" style="transform: scale(1.2);">
+                        </div>`,
+                    iconSize: [48, 48],
+                    iconAnchor: [24, 24]
+                });
+            }
+
+            renderRoutes() {
+                const container = document.getElementById('route-list');
+                const lang = this.state.language;
+                const texts = TRANSLATIONS[lang];
+
+                const categories = {
+                    [texts.catGrand]: ['tokyo_kagoshima', 'tokyo_hakata', 'tokyo_hakodate'],
+                    [texts.catWest]: ['tokaido', 'sanyo', 'kyushu', 'nishi_kyushu'],
+                    [texts.catEast]: ['tohoku', 'akita', 'tokyo_akita', 'yamagata'],
+                    [texts.catNorth]: ['hokkaido'],
+                    [texts.catCentral]: ['hokuriku', 'joetsu']
+                };
+
+                let html = '';
+                for (const [categoryName, routeIds] of Object.entries(categories)) {
+                    const categoryRoutes = ROUTES.filter(r => routeIds.includes(r.id));
+                    if (categoryRoutes.length > 0) {
+                        html += `<div>
+                            <div class="category-header" onclick="app.toggleCategory(this)">
+                                <span>${categoryName}</span><i class="fa-solid fa-chevron-down transition-transform"></i>
+                            </div>
+                            <div class="category-content space-y-3">
+                                ${categoryRoutes.map(route => `
+                                    <div onclick="app.previewRoute('${route.id}', this)" 
+                                         class="route-card cursor-pointer group border border-slate-200 rounded-lg p-3 hover:border-teal-400 hover:shadow-md transition bg-white relative overflow-hidden flex justify-between items-center">
+                                        <div class="absolute left-0 top-0 bottom-0 w-1.5" style="background-color: ${route.color}"></div>
+                                        <div class="pl-3 flex-1">
+                                            <div class="flex justify-between items-start mb-1">
+                                                <h3 class="font-bold text-slate-800 text-sm">${route.names[lang]}</h3>
+                                                <span class="bg-slate-100 text-slate-500 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">${route.durationMinutes}m</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 leading-snug">${route.desc[lang]}</p>
+                                        </div>
+                                        ${route.trainModel ? `<img src="${route.trainModel.image}" class="train-thumb ml-2" alt="${route.trainModel.name}">` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>`;
+                    }
+                }
+                container.innerHTML = html;
+            }
+
+            renderSelectors(route) {
+                const lang = this.state.language;
+                const startSel = document.getElementById('station-start');
+                const endSel = document.getElementById('station-end');
+                const serviceSel = document.getElementById('service-type');
+                
+                const prevStart = startSel.value;
+                const prevEnd = endSel.value;
+                
+                startSel.innerHTML = route.stations.map((s, i) => `<option value="${i}">${s.names[lang]}</option>`).join('');
+                endSel.innerHTML = route.stations.map((s, i) => `<option value="${i}" ${i === route.stations.length-1 ? 'selected' : ''}>${s.names[lang]}</option>`).join('');
+                serviceSel.innerHTML = (route.services || [{names:{en:'Std',ja:'普通',tc:'普通'}, multiplier:1.0}])
+                    .map(s => `<option value="${s.multiplier}">${s.names[lang]}</option>`).join('');
+                
+                if(prevStart && prevStart < route.stations.length) startSel.value = prevStart;
+                else startSel.value = 0;
+
+                if(prevEnd && prevEnd < route.stations.length) endSel.value = prevEnd;
+                else endSel.value = route.stations.length - 1;
+            }
+
+            toggleCategory(header) {
+                const content = header.nextElementSibling;
+                const icon = header.querySelector('i');
+                if (content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    icon.style.transform = 'rotate(0deg)';
+                } else {
+                    content.classList.add('hidden');
+                    icon.style.transform = 'rotate(-90deg)';
+                }
+            }
+
+            previewRoute(routeId, el) {
+                document.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
+                el.classList.add('selected');
+
+                const route = ROUTES.find(r => r.id === routeId);
+                this.state.baseRoute = route;
+                
+                if (route.trainModel) {
+                    document.getElementById('train-hero-img').src = route.trainModel.image;
+                    document.getElementById('train-model-name').innerText = route.trainModel.name;
+                    document.getElementById('selected-train-display').classList.remove('hidden');
+                } else {
+                    document.getElementById('selected-train-display').classList.add('hidden');
+                }
+                
+                document.getElementById('station-start').innerHTML = '';
+                document.getElementById('station-end').innerHTML = '';
+                document.getElementById('service-type').innerHTML = '';
+
+                this.renderSelectors(route);
+                document.getElementById('route-confirm-container').classList.remove('translate-y-full');
+                this.updateRouteSegment();
+            }
+
+            cancelRouteSelection() {
+                document.getElementById('route-confirm-container').classList.add('translate-y-full');
+                document.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
+                
+                if (this.routeLayers.border) this.map.removeLayer(this.routeLayers.border);
+                if (this.routeLayers.main) this.map.removeLayer(this.routeLayers.main);
+                if (this.routeLayers.dashed) this.map.removeLayer(this.routeLayers.dashed);
+                if (this.routeLayers.marker) this.map.removeLayer(this.routeLayers.marker);
+                
+                this.state.baseRoute = null;
+                this.state.segmentPath = null;
+                
+                const texts = TRANSLATIONS[this.state.language];
+                document.getElementById('current-loc-text').innerText = texts.selectRouteDesc;
+            }
+
+            findClosestPathIndex(path, coord) {
+                let minDist = Infinity;
+                let closestIndex = 0;
+                for (let i = 0; i < path.length; i++) {
+                    const dist = Math.pow(path[i][0] - coord[0], 2) + Math.pow(path[i][1] - coord[1], 2);
+                    if (dist < minDist) {
+                        minDist = dist;
+                        closestIndex = i;
+                    }
+                }
+                return closestIndex;
+            }
+
+            updateRouteSegment() {
+                if (!this.state.baseRoute) return;
+                const startIdx = parseInt(document.getElementById('station-start').value);
+                const endIdx = parseInt(document.getElementById('station-end').value);
+                this.state.speedMultiplier = parseFloat(document.getElementById('service-type').value);
+
+                if (isNaN(startIdx) || isNaN(endIdx)) return;
+                if (!this.state.baseRoute.stations[startIdx] || !this.state.baseRoute.stations[endIdx]) return;
+
+                if (endIdx <= startIdx) {
+                    const newEnd = Math.min(this.state.baseRoute.stations.length - 1, startIdx + 1);
+                    document.getElementById('station-end').value = newEnd;
+                    if (newEnd <= startIdx) return; 
+                }
+
+                const startStation = this.state.baseRoute.stations[startIdx];
+                const endStation = this.state.baseRoute.stations[document.getElementById('station-end').value]; 
+                
+                if (!startStation || !endStation) return;
+
+                const path = this.state.baseRoute.path;
+                const idxA = this.findClosestPathIndex(path, startStation.coord);
+                const idxB = this.findClosestPathIndex(path, endStation.coord);
+                const finalIdxA = Math.min(idxA, idxB);
+                const finalIdxB = Math.max(idxA, idxB);
+                this.state.segmentPath = path.slice(finalIdxA, finalIdxB + 1);
+
+                const totalDist = getPathLength(path);
+                const segmentDist = getPathLength(this.state.segmentPath);
+                const ratio = segmentDist / totalDist;
+                
+                const baseSegmentDuration = this.state.baseRoute.durationMinutes * ratio;
+                this.state.segmentDuration = Math.round(baseSegmentDuration * this.state.speedMultiplier);
+
+                document.getElementById('segment-time').innerText = `${this.state.segmentDuration} min`;
+                this.drawMap(this.state.segmentPath);
+            }
+
+            drawMap(path) {
+                if (this.routeLayers.border) this.map.removeLayer(this.routeLayers.border);
+                if (this.routeLayers.main) this.map.removeLayer(this.routeLayers.main);
+                if (this.routeLayers.dashed) this.map.removeLayer(this.routeLayers.dashed);
+                if (this.routeLayers.marker) this.map.removeLayer(this.routeLayers.marker);
+
+                this.routeLayers.border = L.polyline(path, { color: 'white', weight: 10, opacity: 1, lineJoin: 'round' }).addTo(this.map);
+                this.routeLayers.main = L.polyline(path, { color: this.state.baseRoute.color, weight: 6, opacity: 1, lineJoin: 'round' }).addTo(this.map);
+                this.routeLayers.dashed = L.polyline(path, { color: 'white', weight: 2, opacity: 0.5, dashArray: '6, 12', lineJoin: 'round' }).addTo(this.map);
+
+                const isMobile = window.innerWidth < 768;
+                this.map.flyToBounds(this.routeLayers.border.getBounds(), { 
+                    paddingBottomRight: isMobile ? [0, window.innerHeight/2] : [0, 0],
+                    paddingTopLeft: isMobile ? [0, 0] : [400, 50],
+                    duration: 1.0
+                });
+            }
+
+            confirmRoute() {
+                if (!this.state.segmentPath) return;
+                document.getElementById('view-route').classList.add('-translate-x-full');
+                document.getElementById('view-seat').classList.remove('translate-x-full');
+                
+                this.state.currentCar = 4; // Default reset
+                this.renderCarSelector();
+                this.renderSeats();
+            }
+
+            goBackToRoutes() {
+                document.getElementById('view-route').classList.remove('-translate-x-full');
+                document.getElementById('view-seat').classList.add('translate-x-full');
+            }
+
+            // --- Car Selection Logic ---
+            selectCar(carNum) {
+                this.state.currentCar = carNum;
+                this.renderCarSelector();
+                this.renderSeats();
+                this.updateCarInfoLabel();
+            }
+
+            updateCarInfoLabel() {
+                const texts = TRANSLATIONS[this.state.language];
+                let type = "";
+                if (this.state.currentCar <= 3) type = texts.unres; // 1-3 Unreserved
+                else if (this.state.currentCar === 8) type = texts.grn; // 8 Green
+                else type = texts.res; // Others Reserved
+                
+                document.getElementById('lbl-car-info').innerText = `${texts.carInfo} ${this.state.currentCar} - ${type}`;
+            }
+
+            renderCarSelector() {
+                const cars = [1, 2, 3, 4, 5, 6, 7, 8];
+                const texts = TRANSLATIONS[this.state.language];
+                
+                const html = cars.map(num => {
+                    let typeLabel = texts.res;
+                    if (num <= 3) typeLabel = texts.unres;
+                    if (num === 8) typeLabel = texts.grn;
+
+                    const activeClass = (num === this.state.currentCar) ? 'active' : '';
+                    
+                    return `
+                        <div onclick="app.selectCar(${num})" class="car-tab ${activeClass}">
+                            <span class="car-num">${num}</span>
+                            <span class="car-type">${typeLabel}</span>
+                        </div>
+                    `;
+                }).join('');
+                
+                document.getElementById('car-list-container').innerHTML = html;
+            }
+
+            renderSeats() {
+                const grid = document.getElementById('seat-grid');
+                const isGreenCar = (this.state.currentCar === 8);
+                
+                // Layout: Green = 2x2 (AC | D), Ordinary = 3x2 (ABC | DE) roughly modeled as grid cols
+                // We will use CSS Grid manipulation via JS classes or inline styles for simple toggle
+                
+                if (isGreenCar) {
+                    // 2-2 Layout logic
+                    grid.className = "grid grid-cols-5 gap-2"; // 2 seats - aisle - 2 seats
+                    grid.innerHTML = Array.from({length: 8}, (_, i) => {
+                        const row = i + 1;
+                        const isTakenA = Math.random() > 0.6;
+                        const isTakenB = Math.random() > 0.6;
+                        const isTakenC = Math.random() > 0.6;
+                        const isTakenD = Math.random() > 0.6;
+                        
+                        return `
+                            <!-- Left Side -->
+                            <div onclick="app.selectSeat('${row}A', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${isTakenA ? 'bg-slate-300 text-slate-500 taken' : 'bg-white hover:border-teal-500'}">A</div>
+                            <div onclick="app.selectSeat('${row}B', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${isTakenB ? 'bg-slate-300 text-slate-500 taken' : 'bg-white hover:border-teal-500'}">B</div>
+                            
+                            <!-- Aisle -->
+                            <div class="flex items-center justify-center text-slate-300 text-xs font-mono">${row}</div>
+                            
+                            <!-- Right Side -->
+                            <div onclick="app.selectSeat('${row}C', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${isTakenC ? 'bg-slate-300 text-slate-500 taken' : 'bg-white hover:border-teal-500'}">C</div>
+                            <div onclick="app.selectSeat('${row}D', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${isTakenD ? 'bg-slate-300 text-slate-500 taken' : 'bg-white hover:border-teal-500'}">D</div>
+                        `;
+                    }).join('');
+                } else {
+                    // 3-2 Layout logic
+                    grid.className = "grid grid-cols-6 gap-1"; // 3 seats - aisle (implicit or extra col?) - 2 seats. Let's do 6 cols: ABC aisle DE
+                    // Actually let's do: A B C | D E. 5 seats + gap.
+                    // Implementation: Grid with gap, and maybe a spacer div in middle?
+                    // Let's try: grid-cols-[1fr_1fr_1fr_30px_1fr_1fr] roughly
+                    
+                    // Simplified: 3 cols left, 2 cols right. 
+                    // Let's just render a list of rows.
+                    grid.className = "flex flex-col gap-2";
+                    grid.innerHTML = Array.from({length: 10}, (_, i) => {
+                        const row = i + 1;
+                        return `
+                        <div class="flex justify-between items-center w-full">
+                             <div class="flex gap-1">
+                                <div onclick="app.selectSeat('${row}A', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${Math.random()>0.7?'bg-slate-300 taken':'bg-white'}">A</div>
+                                <div onclick="app.selectSeat('${row}B', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${Math.random()>0.7?'bg-slate-300 taken':'bg-white'}">B</div>
+                                <div onclick="app.selectSeat('${row}C', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${Math.random()>0.7?'bg-slate-300 taken':'bg-white'}">C</div>
+                             </div>
+                             <span class="text-xs text-slate-400 font-mono w-6 text-center">${row}</span>
+                             <div class="flex gap-1">
+                                <div onclick="app.selectSeat('${row}D', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${Math.random()>0.7?'bg-slate-300 taken':'bg-white'}">D</div>
+                                <div onclick="app.selectSeat('${row}E', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer ${Math.random()>0.7?'bg-slate-300 taken':'bg-white'}">E</div>
+                             </div>
+                        </div>`;
+                    }).join('');
+                }
+            }
+
+            selectSeat(seatNum, el) {
+                if (el.classList.contains('taken')) return;
+                document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
+                el.classList.remove('bg-white', 'text-slate-600');
+                el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
+                this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
+                document.getElementById('confirm-seat-btn').disabled = false;
+            }
+
+            startFocus() {
+                this.state.isFocusing = true;
+                this.state.startTime = Date.now();
+                this.state.durationSeconds = this.state.segmentDuration * 60;
+
+                const startCoord = this.state.segmentPath[0];
+                
+                // Create Custom Marker with Image
+                if (this.routeLayers.marker) this.map.removeLayer(this.routeLayers.marker);
+                
+                const trainImgUrl = this.state.baseRoute.trainModel ? this.state.baseRoute.trainModel.image : 'https://hufung.github.io/data/N700S.png';
+                const customIcon = this.createTrainIcon(trainImgUrl);
+                
+                this.routeLayers.marker = L.marker(startCoord, {icon: customIcon}).addTo(this.map);
+                this.map.flyTo(startCoord, 13, {duration: 2});
+
+                document.getElementById('view-seat').classList.add('-translate-x-full');
+                document.getElementById('view-focus').classList.remove('translate-x-full');
+                
+                const totalKm = getPathLength(this.state.segmentPath).toFixed(1);
+                document.getElementById('distance-total').innerText = `${totalKm} km`;
+
+                this.updateFocusText(); 
+                this.animateLoop();
+            }
+
+            updateFocusText() {
+                const lang = this.state.language;
+                const endStationIdx = document.getElementById('station-end').value;
+                const stationName = this.state.baseRoute.stations[endStationIdx].names[lang];
+                document.getElementById('next-station-display').innerText = stationName;
+            }
+
+            animateLoop() {
+                if (!this.state.isFocusing) return;
+                const now = Date.now();
+                const elapsed = (now - this.state.startTime) / 1000; 
+                const progress = Math.min(elapsed / this.state.durationSeconds, 1);
+
+                const remaining = Math.max(0, this.state.durationSeconds - elapsed);
+                const mins = Math.floor(remaining / 60);
+                const secs = Math.floor(remaining % 60);
+                document.getElementById('timer-display').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+                let currentDist = 0;
+                const totalDist = getPathLength(this.state.segmentPath);
+                const targetDist = totalDist * progress;
+                
+                let found = false;
+                for(let i=0; i<this.state.segmentPath.length-1; i++) {
+                    const p1 = this.state.segmentPath[i];
+                    const p2 = this.state.segmentPath[i+1];
+                    const segDist = getDistanceFromLatLonInKm(p1[0], p1[1], p2[0], p2[1]);
+                    if (currentDist + segDist >= targetDist) {
+                        const ratio = (targetDist - currentDist) / segDist;
+                        const lat = p1[0] + (p2[0] - p1[0]) * ratio;
+                        const lng = p1[1] + (p2[1] - p1[1]) * ratio;
+                        this.routeLayers.marker.setLatLng([lat, lng]);
+                        this.map.panTo([lat, lng], {animate: false});
+                        found = true;
+                        break;
+                    }
+                    currentDist += segDist;
+                }
+                if(!found && progress >= 1) {
+                     this.routeLayers.marker.setLatLng(this.state.segmentPath[this.state.segmentPath.length-1]);
+                }
+
+                document.getElementById('progress-bar').style.width = `${progress * 100}%`;
+                document.getElementById('distance-traveled').innerText = `${(totalDist * progress).toFixed(1)} km`;
+
+                if (progress >= 1) this.finishTrip();
+                else this.state.animationFrameId = requestAnimationFrame(() => this.animateLoop());
+            }
+
+            finishTrip() {
+                cancelAnimationFrame(this.state.animationFrameId);
+                this.state.isFocusing = false;
+                const lang = this.state.language;
+                const startName = this.state.baseRoute.stations[document.getElementById('station-start').value].names[lang];
+                const endName = this.state.baseRoute.stations[document.getElementById('station-end').value].names[lang];
+                const serviceIdx = document.getElementById('service-type').selectedIndex;
+                const serviceName = this.state.baseRoute.services[serviceIdx].names[lang];
+
+                const trip = {
+                    date: new Date().toLocaleDateString(),
+                    route: `${serviceName} (${startName}→${endName})`,
+                    duration: this.state.segmentDuration,
+                    seat: this.state.selectedSeat
+                };
+                this.saveHistory(trip);
+                alert(TRANSLATIONS[lang].arrived);
+                location.reload();
+            }
+
+            saveHistory(trip) {
+                let history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]');
+                history.unshift(trip);
+                localStorage.setItem('railFocusHistory', JSON.stringify(history));
+            }
+
+            loadHistory() {
+                const history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]');
+                const list = document.getElementById('history-list');
+                if (history.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>';
+                    return;
+                }
+                list.innerHTML = history.map(h => `
+                    <div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center">
+                        <div>
+                            <div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div>
+                            <div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div>
+                        </div>
+                        <div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div>
+                    </div>
+                `).join('');
+            }
+
+            toggleHistory() {
+                document.getElementById('history-modal').classList.toggle('hidden');
+            }
+
+            abandonTrip() {
+                if(confirm(TRANSLATIONS[this.state.language].confirmStop)) { 
+                    cancelAnimationFrame(this.state.animationFrameId);
+                    location.reload();
+                }
+            }
+        }
+
+        // Add missing translation keys
+        TRANSLATIONS.en.arrived = "Arrived! Journey Complete.";
+        TRANSLATIONS.tc.arrived = "已抵達！旅程結束。";
+        TRANSLATIONS.ja.arrived = "到着しました！お疲れ様でした。";
+        
+        TRANSLATIONS.en.confirmStop = "Stop Focus Session?";
+        TRANSLATIONS.tc.confirmStop = "停止專注？";
+        TRANSLATIONS.ja.confirmStop = "集中モードを終了しますか？";
+
+        const app = new App();
+    </script>
+</body>
+</html>
