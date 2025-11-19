@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rail Focus - Japan</title>
+     <meta name="keywords" content="hufung, JR, Train, Focus, Shinkansen, E6,E5,E7,E3">
+    <meta name="author" content="Hufung">
+    <meta name="description" content="Train focus is a website to help you to train your focus, you can get into different JR Shinkansen Train. When you travel focus to your task. you can get into different Train model like 800, E6, E7, E5, E3, N700S, N700A, 500.">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -445,7 +448,7 @@
             names: { en: 'Sanyo Shinkansen', tc: '山陽新幹線', ja: '山陽新幹線' },
             durationMinutes: 148, color: '#0072bc', 
             desc: { en: 'Osaka → Fukuoka', tc: '大阪 → 福岡', ja: '大阪 → 福岡' },
-            trainModel: { name: "N700A", image: "https://hufung.github.io/data/N700S.png" },
+            trainModel: { name: "500", image: "https://hufung.github.io/data/500.png" },
             services: [
                 {names: {en:"Mizuho", tc:"瑞穗號", ja:"みずほ"}, multiplier: 1.0},
                 {names: {en:"Sakura", tc:"櫻號", ja:"さくら"}, multiplier: 1.15},
@@ -608,7 +611,7 @@
             names: { en: 'Nishi-Kyushu Shinkansen', tc: '西九州新幹線', ja: '西九州新幹線' },
             durationMinutes: 23, color: '#b91c1c', 
             desc: { en: 'Takeo-Onsen → Nagasaki', tc: '武雄溫泉 → 長崎', ja: '武雄温泉 → 長崎' },
-            trainModel: { name: "N700S", image: "https://hufung.github.io/data/N700S.png" },
+            trainModel: { name: "N700S", image: "https://hufung.github.io/data/N700A.png" },
             services: [{names: {en:"Kamome", tc:"海鷗號", ja:"かもめ"}, multiplier: 1.0}],
             stations: [
                 {names: {en:"Takeo-Onsen", tc:"武雄溫泉", ja:"武雄温泉"}, coord: [33.1950, 130.0200]},
@@ -769,9 +772,8 @@
                 const texts = TRANSLATIONS[lang];
 
                 const categories = {
-                    [texts.catGrand]: ['tokyo_kagoshima', 'tokyo_hakata', 'tokyo_hakodate'],
-                    [texts.catWest]: ['tokaido', 'sanyo', 'kyushu', 'nishi_kyushu'],
-                    [texts.catEast]: ['tohoku', 'akita', 'tokyo_akita', 'yamagata','hokuriku', 'joetsu'],
+                    [texts.catWest]: ['tokaido', 'sanyo', 'kyushu', 'nishi_kyushu','tokyo_kagoshima', 'tokyo_hakata'],
+                    [texts.catEast]: ['tohoku', 'tokyo_hakodate', 'akita', 'tokyo_akita', 'yamagata','hokuriku', 'joetsu'],
                     [texts.catNorth]: ['hokkaido'],
                 };
 
