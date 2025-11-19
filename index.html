@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="keywords" content="hufung, JR, Train, Focus, Shinkansen, E6,E5,E7,E3">
+     <meta name="keywords" content="hufung, JR, Train, Focus, Shinkansen, E6,E5,E7,E3">
     <meta name="author" content="Hufung">
     <meta name="description" content="Train focus is a website to help you to train your focus, you can get into different JR Shinkansen Train. When you travel focus to your task. you can get into different Train model like 800, E6, E7, E5, E3, N700S, N700A, 500.">
     <title>Rail Focus - Japan</title>
@@ -27,7 +27,7 @@
         ::-webkit-scrollbar-track { background: #f1f1f1; }
         ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #555; }
-        #map { height: 100%; width: 100%; z-index: 0; }
+        #map { height: 100%; width: 100%; z-index: 0; background-color: #a5b4c4; /* Ocean color fallback */ }
         .seat { transition: all 0.2s; }
         .seat:hover:not(.taken) { transform: scale(1.1); }
         #controls-panel { transition: transform 0.3s ease-in-out, height 0.3s ease-in-out; }
@@ -111,8 +111,43 @@
         .car-tab .car-num { font-size: 1.1rem; font-weight: bold; line-height: 1; }
         .car-tab .car-type { font-size: 0.6rem; margin-top: 2px; }
 
+        /* Door Animation CSS */
+        .shinkansen-door-window {
+            width: 140px;
+            height: 220px;
+            background: #1e293b; /* dark interior */
+            border-radius: 12px;
+            border: 8px solid #cbd5e1;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            position: absolute;
+            top: 35%;
+        }
+        .door-glass-reflection {
+            position: absolute;
+            top: 10%;
+            right: 10%;
+            width: 80%;
+            height: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, transparent 51%);
+            border-radius: 4px;
+        }
+        .door-warning-sticker {
+            position: absolute;
+            top: 65%;
+            width: 100px;
+            height: 30px;
+            background-color: #fef08a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #854d0e;
+            font-size: 10px;
+            font-weight: bold;
+            border: 1px solid #eab308;
+            border-radius: 2px;
+        }
+
     </style>
-    <meta name="google-site-verification" content="qcOFByDf3ybTrCSraFeUdqw3PcoSRuX6nw5DHvyu6fk" />
 </head>
 <body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
 
@@ -282,6 +317,30 @@
                 <div id="history-list" class="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-1"></div>
             </div>
         </div>
+
+        <!-- Shinkansen Door Overlay -->
+        <div id="door-overlay" class="fixed inset-0 z-[200] pointer-events-none hidden flex items-center justify-center">
+            <!-- Left Door -->
+            <div id="door-left" class="w-1/2 h-full bg-slate-100 border-r border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-end items-center">
+                <div class="shinkansen-door-window mr-4 md:mr-8">
+                    <div class="door-glass-reflection"></div>
+                </div>
+                <div class="door-warning-sticker mr-4 md:mr-8">
+                    <i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                </div>
+            </div>
+            
+            <!-- Right Door -->
+            <div id="door-right" class="w-1/2 h-full bg-slate-100 border-l border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-start items-center">
+                <div class="shinkansen-door-window ml-4 md:ml-8">
+                    <div class="door-glass-reflection"></div>
+                </div>
+                <div class="door-warning-sticker ml-4 md:ml-8">
+                    <i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -327,7 +386,7 @@
                 travelLog: "Travel Log", catGrand: "Grand Tour (Through Routes)", catWest: "West Japan (Tokaido/Sanyo/Kyushu)",
                 catEast: "East Japan (Tohoku/Akita/Yamagata)", catNorth: "Hokkaido", catCentral: "Central Japan (Hokuriku/Joetsu)",
                 backRoute: "Back to Routes", arrived: "Arrived! Journey Complete.", confirmStop: "Stop Focus Session?",
-                ord: "Ord", grn: "Grn", res: "Res", unres: "Unres"
+                ord: "Ord", grn: "Grn", res: "Res", unres: "Unres", next: "Next: "
             },
             tc: {
                 appTitle: "鐵路專注", navHistory: "乘車記錄", currentLoc: "目前位置",
@@ -339,7 +398,7 @@
                 travelLog: "乘車記錄", catGrand: "日本縱貫 (直通運轉)", catWest: "西日本 (東海道/山陽/九州)",
                 catEast: "東日本 (東北/秋田/山形)", catNorth: "北海道", catCentral: "中日本 (北陸/上越)",
                 backRoute: "返回路線列表", arrived: "已抵達！旅程結束。", confirmStop: "停止專注？",
-                ord: "普通", grn: "綠色", res: "指定", unres: "自由"
+                ord: "普通", grn: "綠色", res: "指定", unres: "自由", next: "下一站: "
             },
             ja: {
                 appTitle: "レイルフォーカス", navHistory: "乗車履歴", currentLoc: "現在地",
@@ -351,7 +410,7 @@
                 travelLog: "乗車履歴", catGrand: "日本縦断 (直通運転)", catWest: "西日本 (東海道・山陽・九州)",
                 catEast: "東日本 (東北・秋田・山形)", catNorth: "北海道", catCentral: "中日本 (北陸・上越)",
                 backRoute: "路線一覧に戻る", arrived: "到着しました！お疲れ様でした。", confirmStop: "集中モードを終了しますか？",
-                ord: "普通", grn: "Ｇ車", res: "指定", unres: "自由"
+                ord: "普通", grn: "Ｇ車", res: "指定", unres: "自由", next: "次は "
             }
         };
 
@@ -627,6 +686,7 @@
                     currentCar: 4, // Default car
                     isFocusing: false,
                     startTime: null,
+                    activeStations: [], // Stores stations with their distance along the path
                     animationFrameId: null
                 };
                 this.map = null;
@@ -666,7 +726,7 @@
 
                 this.renderRoutes();
                 if (this.state.baseRoute) this.renderSelectors(this.state.baseRoute);
-                if (this.state.isFocusing) this.updateFocusText();
+                if (this.state.isFocusing) this.updateFocusText(); // This needs to be updated to dynamic text if focusing
                 
                 // Rerender seat selector components for lang change
                 if(!document.getElementById('view-seat').classList.contains('translate-x-full')) {
@@ -675,10 +735,22 @@
             }
 
             initMap() {
-                this.map = L.map('map', { zoomControl: false }).setView([36.2048, 138.2529], 5);
+                // Japan Bounds (Approximate)
+                const southWest = L.latLng(29.0, 120.0);
+                const northEast = L.latLng(50.0, 160.0);
+                const bounds = L.latLngBounds(southWest, northEast);
+
+                this.map = L.map('map', { 
+                    zoomControl: false,
+                    maxBounds: bounds,       // Restrict panning
+                    maxBoundsViscosity: 1.0, // Sticky bounds
+                    minZoom: 6               // Restrict zooming out too far
+                }).setView([36.2048, 138.2529], 6);
+
                 L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
                     attribution: '&copy; OpenStreetMap, &copy; CartoDB',
-                    maxZoom: 19
+                    maxZoom: 19,
+                    bounds: bounds // Hint to tile layer
                 }).addTo(this.map);
             }
 
@@ -938,9 +1010,6 @@
                 const grid = document.getElementById('seat-grid');
                 const isGreenCar = (this.state.currentCar === 8);
                 
-                // Layout: Green = 2x2 (AC | D), Ordinary = 3x2 (ABC | DE) roughly modeled as grid cols
-                // We will use CSS Grid manipulation via JS classes or inline styles for simple toggle
-                
                 if (isGreenCar) {
                     // 2-2 Layout logic
                     grid.className = "grid grid-cols-5 gap-2"; // 2 seats - aisle - 2 seats
@@ -966,13 +1035,6 @@
                     }).join('');
                 } else {
                     // 3-2 Layout logic
-                    grid.className = "grid grid-cols-6 gap-1"; // 3 seats - aisle (implicit or extra col?) - 2 seats. Let's do 6 cols: ABC aisle DE
-                    // Actually let's do: A B C | D E. 5 seats + gap.
-                    // Implementation: Grid with gap, and maybe a spacer div in middle?
-                    // Let's try: grid-cols-[1fr_1fr_1fr_30px_1fr_1fr] roughly
-                    
-                    // Simplified: 3 cols left, 2 cols right. 
-                    // Let's just render a list of rows.
                     grid.className = "flex flex-col gap-2";
                     grid.innerHTML = Array.from({length: 10}, (_, i) => {
                         const row = i + 1;
@@ -1002,37 +1064,81 @@
                 document.getElementById('confirm-seat-btn').disabled = false;
             }
 
+            // --- START FOCUS WITH DOOR ANIMATION ---
             startFocus() {
+                const overlay = document.getElementById('door-overlay');
+                const left = document.getElementById('door-left');
+                const right = document.getElementById('door-right');
+                
+                left.classList.remove('-translate-x-full');
+                right.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+
+                document.getElementById('view-seat').classList.add('-translate-x-full');
+                document.getElementById('view-focus').classList.remove('translate-x-full');
+
+                setTimeout(() => {
+                    left.classList.add('-translate-x-full');
+                    right.classList.add('translate-x-full');
+                    setTimeout(() => {
+                        overlay.classList.add('hidden');
+                        this._startFocusSession();
+                    }, 1500);
+                }, 800);
+            }
+
+            _startFocusSession() {
                 this.state.isFocusing = true;
                 this.state.startTime = Date.now();
                 this.state.durationSeconds = this.state.segmentDuration * 60;
 
+                // 1. Calculate Distances for All Stations in Segment
+                const startIdx = parseInt(document.getElementById('station-start').value);
+                const endIdx = parseInt(document.getElementById('station-end').value);
+                // Get subset of stations from Start+1 to End
+                const segmentStations = this.state.baseRoute.stations.slice(startIdx + 1, endIdx + 1);
+                
+                this.state.activeStations = segmentStations.map(st => {
+                    // Map station coordinate to the nearest index on the high-res polyline
+                    const pathIdx = this.findClosestPathIndex(this.state.segmentPath, st.coord);
+                    // Calculate distance from start of segment to this station
+                    const distanceKm = getPathLength(this.state.segmentPath.slice(0, pathIdx + 1));
+                    return { names: st.names, dist: distanceKm };
+                });
+
+                // 2. Setup Marker
                 const startCoord = this.state.segmentPath[0];
-                
-                // Create Custom Marker with Image
                 if (this.routeLayers.marker) this.map.removeLayer(this.routeLayers.marker);
-                
                 const trainImgUrl = this.state.baseRoute.trainModel ? this.state.baseRoute.trainModel.image : 'https://hufung.github.io/data/N700S.png';
                 const customIcon = this.createTrainIcon(trainImgUrl);
-                
                 this.routeLayers.marker = L.marker(startCoord, {icon: customIcon}).addTo(this.map);
                 this.map.flyTo(startCoord, 13, {duration: 2});
 
-                document.getElementById('view-seat').classList.add('-translate-x-full');
-                document.getElementById('view-focus').classList.remove('translate-x-full');
-                
                 const totalKm = getPathLength(this.state.segmentPath).toFixed(1);
                 document.getElementById('distance-total').innerText = `${totalKm} km`;
 
-                this.updateFocusText(); 
+                this.updateFocusText(0); // Initial call with 0 km
                 this.animateLoop();
             }
 
-            updateFocusText() {
+            updateFocusText(currentKm) {
                 const lang = this.state.language;
-                const endStationIdx = document.getElementById('station-end').value;
-                const stationName = this.state.baseRoute.stations[endStationIdx].names[lang];
-                document.getElementById('next-station-display').innerText = stationName;
+                const texts = TRANSLATIONS[lang];
+                
+                // Find the first station whose distance is greater than current distance
+                const nextStation = this.state.activeStations.find(st => st.dist > currentKm);
+                
+                let label = "";
+                if (nextStation) {
+                    label = nextStation.names[lang];
+                } else {
+                    // Fallback if we are very close to the end or past the last station calc
+                    const endIdx = document.getElementById('station-end').value;
+                    label = this.state.baseRoute.stations[endIdx].names[lang];
+                }
+                
+                document.getElementById('next-station-display').innerText = label;
+                document.getElementById('lbl-next-station').innerText = texts.next;
             }
 
             animateLoop() {
@@ -1068,7 +1174,11 @@
                 }
                 if(!found && progress >= 1) {
                      this.routeLayers.marker.setLatLng(this.state.segmentPath[this.state.segmentPath.length-1]);
+                     currentDist = totalDist;
                 }
+
+                // Update next station based on current distance
+                this.updateFocusText(targetDist);
 
                 document.getElementById('progress-bar').style.width = `${progress * 100}%`;
                 document.getElementById('distance-traveled').innerText = `${(totalDist * progress).toFixed(1)} km`;
