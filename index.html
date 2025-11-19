@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-     <meta name="keywords" content="hufung, JR, Train, Focus, Shinkansen, E6,E5,E7,E3">
-    <meta name="author" content="Hufung">
-    <meta name="description" content="Train focus is a website to help you to train your focus, you can get into different JR Shinkansen Train. When you travel focus to your task. you can get into different Train model like 800, E6, E7, E5, E3, N700S, N700A, 500.">
     <title>Rail Focus - Japan</title>
     
     <!-- Tailwind CSS -->
@@ -736,7 +733,7 @@
 
             initMap() {
                 // Japan Bounds (Approximate)
-                const southWest = L.latLng(29.0, 120.0);
+                const southWest = L.latLng(20.0, 120.0);
                 const northEast = L.latLng(50.0, 160.0);
                 const bounds = L.latLngBounds(southWest, northEast);
 
@@ -774,9 +771,8 @@
                 const categories = {
                     [texts.catGrand]: ['tokyo_kagoshima', 'tokyo_hakata', 'tokyo_hakodate'],
                     [texts.catWest]: ['tokaido', 'sanyo', 'kyushu', 'nishi_kyushu'],
-                    [texts.catEast]: ['tohoku', 'akita', 'tokyo_akita', 'yamagata'],
+                    [texts.catEast]: ['tohoku', 'akita', 'tokyo_akita', 'yamagata','hokuriku', 'joetsu'],
                     [texts.catNorth]: ['hokkaido'],
-                    [texts.catCentral]: ['hokuriku', 'joetsu']
                 };
 
                 let html = '';
