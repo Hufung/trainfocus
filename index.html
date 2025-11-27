@@ -538,63 +538,20 @@
                 });
 
                 if (!reachesTsuruga) {
-    // 1. Define the raw Key Points (Stations/Turns)
-    const rawExtensionCoordinates = [
-        [36.5780, 136.6480], // Kanazawa
-        [36.4000, 136.4500], // Komatsu area
-        [36.3000, 136.3500], // Kagaonsen area
-        [36.2100, 136.2300], // Awaraonsen area
-        [36.0621, 136.2232], // Fukui
-        [35.9000, 136.1600],
-        [35.7611966082347,136.14070691577504],
-        [35.65855522048697,136.09575671996654],
-        [35.6450, 136.0750]  // Tsuruga
-    ];
-
-    // 2. Generate the Smooth Path
-    // '20' is the smoothness level. Higher = smoother but more data.
-    const detailedExtension = getSpline(rawExtensionCoordinates, 20);
-
-    // 3. Add the smoothed path to the main path
-    hokurikuMainPath = [...hokurikuMainPath, ...detailedExtension];
-};
-                // --- Helper: Catmull-Rom Spline Algorithm ---
-// This turns jagged coordinates into a smooth curve passing through every point.
-function getSpline(points, resolution = 15) {
-    const newPoints = [];
-    
-    // SAFEGUARD: Filter out bad data immediately to prevent errors
-    const cleanPoints = points.filter(p => p && p.length === 2 && !isNaN(p[0]) && !isNaN(p[1]));
-    if (cleanPoints.length < 2) return cleanPoints;
-
-    const spline = (p0, p1, p2, p3, t) => {
-        return 0.5 * (
-            (2 * p1) +
-            (-p0 + p2) * t +
-            (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
-            (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t
-        );
-    };
-
-    for (let i = 0; i < cleanPoints.length - 1; i++) {
-        const p0 = cleanPoints[Math.max(i - 1, 0)];
-        const p1 = cleanPoints[i];
-        const p2 = cleanPoints[i + 1];
-        const p3 = cleanPoints[Math.min(i + 2, cleanPoints.length - 1)];
-
-        for (let j = 0; j < resolution; j++) {
-            const t = j / resolution;
-            const x = spline(p0[0], p1[0], p2[0], p3[0], t);
-            const y = spline(p0[1], p1[1], p2[1], p3[1], t);
-            newPoints.push([x, y]);
-        }
-    }
-    // Add the final point
-    newPoints.push(cleanPoints[cleanPoints.length - 1]);
-    
-    return newPoints;
-};
-                
+                    // Detailed Smooth Path: Kanazawa -> Tsuruga
+                    const detailedExtension = [[
+                        [36.5780, 136.6480], // Kanazawa
+                        [36.4000, 136.4500], // Komatsu area
+                        [36.3000, 136.3500], // Kagaonsen area
+                        [36.2100, 136.2300], // Awaraonsen area
+                        [36.0621, 136.2232], // Fukui
+                        [35.9000, 136.1600],
+                        [35.7611966082347,136.14070691577504],
+                        [35.65855522048697,136.09575671996654],
+                        [35.6450, 136.0750]  // Tsuruga
+                    ]];
+                    hokurikuMainPath = [...hokurikuMainPath, ...detailedExtension];
+                }
 
                 HOKURIKU.multiPath = [...tokyoToOmiyaPath, ...omiyaToTakasakiPath, ...hokurikuMainPath];
 
