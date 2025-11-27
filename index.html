@@ -539,60 +539,18 @@
 
                 if (!reachesTsuruga) {
                     // Detailed Smooth Path: Kanazawa -> Tsuruga
-                    const detailedExtension = [
-  [36.5780, 136.6480], // Kanazawa
-  [36.4000, 136.4500], // Komatsu area
-  [36.3000, 136.3500], // Kagaonsen area
-  [36.2100, 136.2300], // Awaraonsen area
-  [36.0621, 136.2232], // Fukui
-  [35.9000, 136.1600],
-  [35.7611966082347, 136.14070691577504],
-  [35.65855522048697, 136.09575671996654],
-  [35.6450, 136.0750]  // Tsuruga
-];
-
-// --- Helper Function: Catmull-Rom Spline ---
-// resolution: how many points to add between coordinates (higher = smoother)
-function getSpline(points, resolution = 10) {
-    const newPoints = [];
-    
-    // Helper to calculate interpolated point
-    const spline = (p0, p1, p2, p3, t) => {
-        return 0.5 * (
-            (2 * p1) +
-            (-p0 + p2) * t +
-            (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t +
-            (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t
-        );
-    };
-
-    for (let i = 0; i < points.length - 1; i++) {
-        // Handle edges by duplicating first/last points
-        const p0 = points[Math.max(i - 1, 0)];
-        const p1 = points[i];
-        const p2 = points[i + 1];
-        const p3 = points[Math.min(i + 2, points.length - 1)];
-
-        for (let j = 0; j < resolution; j++) {
-            const t = j / resolution;
-            const x = spline(p0[0], p1[0], p2[0], p3[0], t);
-            const y = spline(p0[1], p1[1], p2[1], p3[1], t);
-            newPoints.push([x, y]);
-        }
-    }
-    // Add the very last point
-    newPoints.push(points[points.length - 1]);
-    
-    return newPoints;
-}
-
-// --- Usage ---
-// Generate a smoother path with 20 sub-points per segment
-const smoothExtension = getSpline(detailedExtension, 20);
-
-console.log(smoothExtension); 
-// Pass 'smoothExtension' to your map (Leaflet/Mapbox/Google Maps)
-                    hokurikuMainPath = [...hokurikuMainPath, ...smoothExtension];
+                    const detailedExtension = [[
+                        [36.5780, 136.6480], // Kanazawa
+                        [36.4000, 136.4500], // Komatsu area
+                        [36.3000, 136.3500], // Kagaonsen area
+                        [36.2100, 136.2300], // Awaraonsen area
+                        [36.0621, 136.2232], // Fukui
+                        [35.9000, 136.1600],
+                        [35.7611966082347,136.14070691577504],
+                        [35.65855522048697,136.09575671996654],
+                        [35.6450, 136.0750]  // Tsuruga
+                    ]];
+                    hokurikuMainPath = [...hokurikuMainPath, ...detailedExtension];
                 }
 
                 HOKURIKU.multiPath = [...tokyoToOmiyaPath, ...omiyaToTakasakiPath, ...hokurikuMainPath];
