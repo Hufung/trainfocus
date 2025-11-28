@@ -160,24 +160,6 @@
             }
         }
 
-        /* Mobile sidebar mode */
-        .mobile-sidebar {
-            position: absolute !important;
-            left: 0 !important;
-            top: 56px !important;
-            width: 280px !important;
-            height: calc(100vh - 56px) !important;
-            border-radius: 0 !important;
-            border-right: 1px solid #e2e8f0 !important;
-            border-top: 0 !important;
-            z-index: 50 !important;
-            max-height: none !important;
-        }
-
-        .mobile-bottom {
-            /* default mobile bottom sheet */
-        }
-
 
 
         .route-card.selected {
@@ -508,15 +490,10 @@
                 <option value="tc">繁體中文</option>
                 <option value="ja">日本語</option>
             </select>
-            <button onclick="app.toggleHistory()"
+            <button onclick="app.toggleHistory()" 
                 class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
                 <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
                     id="nav-history">Travel Log</span>
-            </button>
-            <button onclick="app.toggleMobileMode()"
-                class="md:hidden text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target"
-                id="mobile-mode-btn">
-                <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </header>
@@ -913,31 +890,11 @@
                     startTime: null,
                     activeStations: [],
                     animationFrameId: null,
-                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
-                    mobileMode: window.innerWidth < 768
+                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'
                 };
                 this.map = null;
-                this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null };
+                this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
                 this.init();
-            }
-
-            toggleMobileMode() {
-                this.state.mobileMode = !this.state.mobileMode;
-                this.updateMobileLayout();
-            }
-
-            updateMobileLayout() {
-                const panel = document.getElementById('controls-panel');
-                const map = document.getElementById('map');
-                if (this.state.mobileMode) {
-                    panel.classList.add('mobile-sidebar');
-                    panel.classList.remove('mobile-bottom');
-                    map.style.marginLeft = '280px';
-                } else {
-                    panel.classList.add('mobile-bottom');
-                    panel.classList.remove('mobile-sidebar');
-                    map.style.marginLeft = '0';
-                }
             }
 
 
@@ -949,7 +906,6 @@
                 this.renderRoutes();
                 this.loadHistory();
                 this.setLanguage('en');
-                this.updateMobileLayout();
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
             }
