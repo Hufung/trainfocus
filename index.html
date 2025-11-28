@@ -312,11 +312,6 @@
                 height: 56px;
                 margin: 0 2px;
             }
-            
-            #car-list-container {
-                padding: 8px 0;
-                gap: 4px;
-            }
         }
 
         .shinkansen-door-window {
@@ -383,26 +378,20 @@
             #view-focus {
                 padding: 20px 16px;
             }
-            
+
             #next-station-display {
                 font-size: 1.5rem;
                 margin-bottom: 20px;
             }
-            
+
             #timer-display {
                 font-size: 2.5rem;
             }
-            
+
             /* Larger progress circle for mobile */
             #view-focus > div > div:nth-child(4) {
                 width: 160px !important;
                 height: 160px !important;
-            }
-            
-            /* Better mobile distance display */
-            .flex.justify-between.w-full.text-xs.text-slate-400.font-mono {
-                padding: 0 16px;
-                font-size: 0.75rem;
             }
         }
 
@@ -412,16 +401,12 @@
                 height: 56px;
                 padding: 0 16px;
             }
-            
-            header h1 {
-                font-size: 1rem;
-            }
-            
+
             header select {
                 font-size: 14px;
                 padding: 6px 8px;
             }
-            
+
             /* Hide text on very small screens, show icons */
             @media (max-width: 360px) {
                 #nav-history {
@@ -432,17 +417,11 @@
 
         /* Mobile modal improvements */
         @media (max-width: 768px) {
-            #history-modal {
-                padding: 16px;
-                align-items: flex-end;
-            }
-            
             #history-modal > div {
-                max-height: 70vh;
                 border-radius: 16px 16px 0 0;
                 animation: slideUpModal 0.3s ease-out;
             }
-            
+
             @keyframes slideUpModal {
                 from {
                     transform: translateY(100%);
@@ -457,16 +436,12 @@
 
         /* Mobile door overlay improvements */
         @media (max-width: 768px) {
-            #door-overlay {
-                z-index: 9999;
-            }
-            
             .shinkansen-door-window {
                 width: 100px;
                 height: 160px;
                 border-width: 6px;
             }
-            
+
             .door-warning-sticker {
                 font-size: 8px;
                 width: 80px;
@@ -481,12 +456,6 @@
                 padding: 12px;
                 border-radius: 8px;
                 min-height: 44px;
-            }
-
-            /* Better mobile grid layout - stack selects vertically */
-            .grid.grid-cols-2.gap-3 {
-                grid-template-columns: 1fr;
-                gap: 16px;
             }
         }
 
@@ -509,19 +478,6 @@
             /* Adjust view-route padding on mobile */
             #view-route {
                 padding: 16px;
-            }
-
-            /* Ensure route-confirm-container fits on mobile */
-            #route-confirm-container {
-                max-height: 70vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 16px;
-            }
-
-            /* Increase bottom padding for route list on mobile to accommodate larger container */
-            #route-list {
-                padding-bottom: 16rem; /* 256px */
             }
         }
 
@@ -650,10 +606,6 @@
                 width: 450px;
             }
 
-            header h1 {
-                font-size: 1.25rem;
-            }
-
             .route-card {
                 padding: 20px;
             }
@@ -689,7 +641,7 @@
     <header class="bg-slate-900 text-white h-14 md:h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
-            <h1 class="font-bold text-lg md:text-lg tracking-wide" id="app-title">RAIL FOCUS</h1>
+            <h1 class="font-bold text-base md:text-xl tracking-wide" id="app-title">RAIL FOCUS</h1>
         </div>
         <div class="flex items-center gap-2 md:gap-3">
             <select id="lang-select" onchange="app.setLanguage(this.value)"
@@ -732,10 +684,10 @@
                     </h2>
                     <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc">Choose your line and stations.</p>
 
-                    <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-48" id="route-list"></div>
+                    <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-64 md:pb-0" id="route-list"></div>
 
                     <div id="route-confirm-container"
-                        class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl">
+                        class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl md:rounded-xl max-h-[70vh] md:max-h-none overflow-y-auto md:overflow-y-visible">
                         <div class="flex justify-between items-center mb-2">
                             <button onclick="app.cancelRouteSelection()"
                                 class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition">
@@ -759,7 +711,7 @@
                                 class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-3 mb-4">
                             <div>
                                 <label class="text-xs font-bold text-slate-500 block mb-1"
                                     id="lbl-depart">Depart</label>
@@ -795,7 +747,7 @@
                                 class="fa-solid fa-arrow-left"></i></button>
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
                     </div>
-                    <div class="flex gap-2 overflow-x-auto pb-2 mb-2" id="car-list-container"></div>
+                    <div class="flex gap-1 md:gap-2 overflow-x-auto pb-2 mb-2 p-2 md:p-0" id="car-list-container"></div>
                     <p class="text-slate-500 text-sm mb-2" id="lbl-car-info">Car 1 - Ordinary</p>
                     <div class="flex-1 flex flex-col overflow-hidden">
                         <div
@@ -847,7 +799,7 @@
                                 class="bg-teal-500 h-2 rounded-full transition-all duration-75 ease-linear"
                                 style="width: 0%"></div>
                         </div>
-                        <div class="flex justify-between w-full text-xs text-slate-400 font-mono">
+                        <div class="flex justify-between w-full text-xs text-slate-400 font-mono px-4 md:px-0">
                             <span id="distance-traveled">0 km</span>
                             <span id="distance-total">100 km</span>
                         </div>
@@ -863,8 +815,8 @@
         </div>
 
         <div id="history-modal"
-            class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[80vh]">
+            class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 md:p-6 backdrop-blur-sm items-end md:items-center">
+            <div class="bg-white rounded-t-2xl md:rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[70vh] md:max-h-[80vh]">
                 <div class="p-4 border-b border-slate-100 flex justify-between items-center">
                     <h3 class="font-bold text-lg" id="lbl-travel-log">Travel Log</h3>
                     <button onclick="app.toggleHistory()" class="text-slate-400 hover:text-slate-600"><i
@@ -875,7 +827,7 @@
         </div>
 
         <div id="door-overlay"
-            class="fixed inset-0 z-[200] pointer-events-none hidden flex items-center justify-center">
+            class="fixed inset-0 z-[9999] md:z-[200] pointer-events-none hidden flex items-center justify-center">
             <div id="door-left"
                 class="w-1/2 h-full bg-slate-100 border-r border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-end items-center">
                 <div class="shinkansen-door-window mr-4 md:mr-8">
@@ -1610,12 +1562,10 @@
                 const isMobile = this.state.isMobile;
                 
                 if (isGreen) {
-                    grid.className = isMobile ? "grid grid-cols-5 gap-3 p-2" : "grid grid-cols-5 gap-2";
+                    grid.className = "grid grid-cols-5 gap-2 md:gap-3 p-4 md:p-2";
                     grid.innerHTML = Array.from({ length: 8 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile ? 
-                            "seat h-12 rounded border flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-target" :
-                            "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
+                        const seatClass = "seat h-10 md:h-12 rounded border flex items-center justify-center text-xs md:text-sm font-bold cursor-pointer bg-white hover:border-teal-500 touch-target";
                         return `<div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
                                 <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
                                 <div class="flex items-center justify-center text-slate-300 text-xs font-mono">${r}</div>
@@ -1623,12 +1573,10 @@
                                 <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>`;
                     }).join('');
                 } else {
-                    grid.className = isMobile ? "flex flex-col gap-3 p-2" : "flex flex-col gap-2";
+                    grid.className = "flex flex-col gap-2 md:gap-3 p-4 md:p-2";
                     grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile ?
-                            "seat w-12 h-12 rounded border flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-target" :
-                            "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
+                        const seatClass = "seat w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded border flex items-center justify-center text-xs md:text-sm font-bold cursor-pointer bg-white hover:border-teal-500 touch-target";
                         return `<div class="flex justify-between items-center w-full">
                                     <div class="flex gap-2">
                                         <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
