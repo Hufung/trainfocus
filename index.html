@@ -38,72 +38,43 @@
             -ms-text-size-adjust: 100%;
         }
 
-        /* Enhanced Mobile-specific optimizations */
+        /* Mobile-specific optimizations */
         @media (max-width: 768px) {
             body {
                 /* Prevent pull-to-refresh and overscroll */
                 overscroll-behavior: none;
                 touch-action: manipulation;
-                /* Prevent text selection on mobile for better UX */
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
             }
             
             /* Better touch targets on mobile - increased size */
             .seat {
-                min-height: 48px;
-                min-width: 48px;
-                /* Add subtle shadow for better touch feedback */
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                transition: all 0.2s ease;
-            }
-            
-            .seat:active {
-                transform: scale(0.95);
-                box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                min-height: 44px;
+                min-width: 44px;
             }
             
             .car-tab {
-                min-width: 64px;
-                min-height: 64px;
-                /* Better mobile car tab spacing */
-                margin: 4px;
+                min-width: 56px;
+                min-height: 56px;
+                margin: 0 2px;
             }
             
             button, select, .route-card {
-                min-height: 48px;
-                /* Enhanced mobile button styles */
-                border-radius: 12px;
-                transition: all 0.2s ease;
+                min-height: 44px;
             }
             
-            /* Better mobile typography - improved readability */
-            .text-xs {
-                font-size: 0.875rem;
-                line-height: 1.4;
-            }
-            
-            /* Mobile-specific enhanced route cards */
+            /* Enhanced route cards */
             .route-card {
-                padding: 20px;
-                margin: 12px 0;
-                border-radius: 16px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                border: 2px solid transparent;
+                padding: 16px;
+                margin: 8px 0;
+                border-radius: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
             
-            .route-card:active {
-                transform: scale(0.98);
-                border-color: #0f766e;
-            }
-            
-            /* Enhanced mobile controls panel */
+            /* Enhanced controls panel */
             #controls-panel {
-                border-radius: 24px 24px 0 0;
-                box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.2);
-                backdrop-filter: blur(10px);
+                border-radius: 20px 20px 0 0;
+                max-height: 85vh;
+                overflow-y: auto;
             }
         }
 
@@ -180,76 +151,16 @@
             transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
         }
 
-        /* Mobile-optimized controls panel */
+        /* Mobile controls panel */
         @media (max-width: 768px) {
             #controls-panel {
                 border-radius: 20px 20px 0 0;
-                /* Prevent keyboard viewport issues */
                 max-height: 85vh;
                 overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            /* Better mobile scroll handling */
-            .overflow-y-auto {
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-            
-            .overflow-y-auto::-webkit-scrollbar {
-                display: none;
             }
         }
 
-        /* Enhanced Mobile slide-up animation improvements */
-        @media (max-width: 768px) {
-            .mobile-slide-up {
-                animation: slideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            
-            @keyframes slideUp {
-                from {
-                    transform: translateY(100%);
-                    opacity: 0;
-                    filter: blur(2px);
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                    filter: blur(0);
-                }
-            }
-            
-            /* Enhanced mobile transitions */
-            .mobile-transition {
-                transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                           opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-            
-            /* Mobile swipe gesture indicators */
-            .swipe-indicator {
-                position: relative;
-            }
-            
-            .swipe-indicator::after {
-                content: '';
-                position: absolute;
-                bottom: -8px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 32px;
-                height: 4px;
-                background: rgba(15, 118, 110, 0.3);
-                border-radius: 2px;
-                animation: swipePulse 2s ease-in-out infinite;
-            }
-            
-            @keyframes swipePulse {
-                0%, 100% { opacity: 0.3; transform: translateX(-50%) scaleX(1); }
-                50% { opacity: 0.6; transform: translateX(-50%) scaleX(1.2); }
-            }
-        }
+
 
         .route-card.selected {
             border-color: #0d9488;
@@ -376,17 +287,11 @@
             margin-top: 2px;
         }
 
-        /* Mobile-specific car tab improvements */
+        /* Mobile car tab adjustments */
         @media (max-width: 768px) {
             .car-tab {
                 width: 56px;
                 height: 56px;
-                margin: 0 2px;
-            }
-            
-            #car-list-container {
-                padding: 8px 0;
-                gap: 4px;
             }
         }
 
@@ -449,180 +354,32 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Mobile focus mode improvements */
-        @media (max-width: 768px) {
-            #view-focus {
-                padding: 20px 16px;
-            }
-            
-            #next-station-display {
-                font-size: 1.5rem;
-                margin-bottom: 20px;
-            }
-            
-            #timer-display {
-                font-size: 2.5rem;
-            }
-            
-            /* Larger progress circle for mobile */
-            #view-focus > div > div:nth-child(4) {
-                width: 160px !important;
-                height: 160px !important;
-            }
-            
-            /* Better mobile distance display */
-            .flex.justify-between.w-full.text-xs.text-slate-400.font-mono {
-                padding: 0 16px;
-                font-size: 0.75rem;
-            }
-        }
-
-        /* Mobile header improvements */
-        @media (max-width: 768px) {
-            header {
-                height: 56px;
-                padding: 0 16px;
-            }
-            
-            header h1 {
-                font-size: 1rem;
-            }
-            
-            header select {
-                font-size: 14px;
-                padding: 6px 8px;
-            }
-            
-            /* Hide text on very small screens, show icons */
-            @media (max-width: 360px) {
-                #nav-history {
-                    display: none;
-                }
-            }
-        }
-
-        /* Enhanced Mobile modal improvements */
+        /* Mobile modal improvements */
         @media (max-width: 768px) {
             #history-modal {
                 padding: 0;
                 align-items: flex-end;
-                backdrop-filter: blur(4px);
             }
             
             #history-modal > div {
                 max-height: 80vh;
-                border-radius: 24px 24px 0 0;
-                animation: slideUpModal 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.3);
+                border-radius: 16px 16px 0 0;
                 overflow: hidden;
-            }
-            
-            @keyframes slideUpModal {
-                from {
-                    transform: translateY(100%) scale(0.95);
-                    opacity: 0;
-                    filter: blur(4px);
-                }
-                to {
-                    transform: translateY(0) scale(1);
-                    opacity: 1;
-                    filter: blur(0);
-                }
-            }
-            
-            /* Enhanced modal close button */
-            #history-modal button[onclick="app.toggleHistory()"] {
-                width: 32px;
-                height: 32px;
-                border-radius: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.2s ease;
-            }
-            
-            #history-modal button[onclick="app.toggleHistory()"]:active {
-                transform: scale(0.9);
-                background-color: rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        /* Mobile door overlay improvements */
-        @media (max-width: 768px) {
-            #door-overlay {
-                z-index: 9999;
-            }
-            
-            .shinkansen-door-window {
-                width: 100px;
-                height: 160px;
-                border-width: 6px;
-            }
-            
-            .door-warning-sticker {
-                font-size: 8px;
-                width: 80px;
-                height: 24px;
             }
         }
 
         /* Mobile select improvements */
         @media (max-width: 768px) {
             select {
-                font-size: 16px; /* Prevent zoom on iOS */
+                font-size: 16px;
                 padding: 12px;
                 border-radius: 8px;
                 min-height: 44px;
             }
 
-            /* Better mobile grid layout - stack selects vertically */
             .grid.grid-cols-2.gap-3 {
                 grid-template-columns: 1fr;
                 gap: 16px;
-            }
-        }
-
-        /* Mobile route cards */
-        @media (max-width: 768px) {
-            .route-card {
-                padding: 16px;
-                margin-bottom: 12px;
-            }
-
-            .route-card h3 {
-                font-size: 1rem;
-            }
-
-            .train-thumb {
-                width: 50px;
-                height: 50px;
-            }
-
-            /* Adjust view-route padding on mobile */
-            #view-route {
-                padding: 16px;
-            }
-
-            /* Ensure route-confirm-container fits on mobile */
-            #route-confirm-container {
-                max-height: 70vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-                padding: 16px;
-            }
-
-            /* Increase bottom padding for route list on mobile to accommodate larger container */
-            #route-list {
-                padding-bottom: 16rem; /* 256px */
-            }
-        }
-
-        /* Mobile notification style improvements */
-        @media (max-width: 768px) {
-            .bg-white\/90.backdrop-blur {
-                padding: 12px;
-                border-radius: 12px;
-                margin: 8px;
             }
         }
 
@@ -641,163 +398,33 @@
             border-radius: 6px;
         }
 
-        .ismobile {
-            /* Additional mobile-specific styles */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
 
-        /* Responsive display utilities */
-        .mobile-only {
-            display: none;
-        }
-
-        .ismobile .mobile-only {
-            display: block;
-        }
-
-        .desktop-only {
-            display: block;
-        }
-
-        .ismobile .desktop-only {
-            display: none;
-        }
 
         .keyboard-open #map {
             display: none; /* Hide map when keyboard is open */
         }
 
-        /* Enhanced mobile seat selection */
+        /* Mobile seat styling */
         @media (max-width: 768px) {
             .seat {
-                /* Better mobile seat styling */
-                border-radius: 12px;
+                border-radius: 8px;
                 border: 2px solid #e2e8f0;
                 font-weight: 600;
-                transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-                background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
-            }
-            
-            .seat:active {
-                transform: scale(0.95);
             }
             
             .seat.selected {
-                background: linear-gradient(145deg, #0f766e 0%, #0d9488 100%) !important;
+                background: #0f766e !important;
                 color: white !important;
                 border-color: #0f766e !important;
-                transform: scale(1.1);
-                box-shadow: 0 8px 16px rgba(13, 148, 136, 0.4);
-                border: 2px solid rgba(255, 255, 255, 0.2);
             }
             
             .seat.taken {
-                background: linear-gradient(145deg, #f1f5f9 0%, #e2e8f0 100%);
+                background: #f1f5f9;
                 color: #94a3b8;
                 border-color: #cbd5e1;
             }
-            
-            /* Enhanced seat grid layout for mobile */
-            #seat-grid {
-                padding: 16px;
-                gap: 12px;
-            }
-            
-            .flex.justify-between.items-center.w-full {
-                padding: 8px;
-                border-radius: 12px;
-                background: rgba(248, 250, 252, 0.5);
-                margin-bottom: 8px;
-            }
-            
-            /* Row number styling */
-            .text-sm.text-slate-400.font-mono {
-                background: #f1f5f9;
-                border-radius: 8px;
-                padding: 8px 12px;
-                font-weight: 600;
-                color: #64748b;
-            }
         }
         
-        /* Mobile performance optimizations */
-        @media (max-width: 768px) {
-            /* Optimize animations for mobile performance */
-            *, *::before, *::after {
-                -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-                -webkit-perspective: 1000px;
-                perspective: 1000px;
-            }
-            
-            /* Reduce motion for users who prefer it */
-            @media (prefers-reduced-motion: reduce) {
-                *, *::before, *::after {
-                    animation-duration: 0.01ms !important;
-                    animation-iteration-count: 1 !important;
-                    transition-duration: 0.01ms !important;
-                }
-            }
-            
-            /* Optimize scroll performance */
-            .overflow-y-auto {
-                -webkit-overflow-scrolling: touch;
-                scroll-behavior: smooth;
-            }
-            
-            /* GPU acceleration for frequently animated elements */
-            .train-marker-container,
-            .car-tab.active,
-            .seat.selected,
-            .route-card:active {
-                will-change: transform;
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-            }
-        }
-
-        /* Mobile toast notification */
-        .mobile-toast {
-            transition: all 0.3s ease;
-            transform: translateX(-50%) translateY(-20px);
-            opacity: 0;
-        }
-
-        /* Improved mobile route cards */
-        @media (max-width: 768px) {
-            .route-card {
-                padding: 16px;
-                margin: 8px 0;
-                border-radius: 12px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
-            
-            .route-card:active {
-                transform: scale(0.98);
-                transition: transform 0.1s ease;
-            }
-        }
-
-        /* Mobile-specific loading screen */
-        @media (max-width: 768px) {
-            #loading-screen {
-                background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-            }
-        }
-
-        /* Better mobile focus indicators */
-        @media (max-width: 768px) {
-            button:focus,
-            select:focus,
-            .seat:focus {
-                outline: 2px solid #0f766e;
-                outline-offset: 2px;
-            }
-        }
-
         /* Mobile landscape optimizations */
         @media (max-width: 768px) and (orientation: landscape) {
             #controls-panel {
@@ -806,11 +433,6 @@
 
             #view-focus {
                 padding: 12px 16px;
-            }
-
-            .car-tab {
-                width: 48px;
-                height: 48px;
             }
         }
 
@@ -1071,110 +693,7 @@
     <script>
         let originalTitle = document.title;
         
-        // Mobile device detection and optimization
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-        
-        // Enhanced Mobile-specific optimizations
-        if (isMobile) {
-            document.body.classList.add('ismobile');
-            
-            // Prevent zoom on input focus for iOS
-            if (isIOS) {
-                const meta = document.createElement('meta');
-                meta.name = 'viewport';
-                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-                document.head.appendChild(meta);
-            }
-            
-            // Enhanced touch feedback with gesture detection
-            let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
-            let gestureStartTime = 0;
-            
-            document.addEventListener('touchstart', function(e) {
-                touchStartX = e.touches[0].clientX;
-                touchStartY = e.touches[0].clientY;
-                touchStartTime = Date.now();
-                gestureStartTime = touchStartTime;
-                
-                // Add haptic feedback for touch start
-                if (navigator.vibrate) navigator.vibrate(5);
-            }, { passive: true });
-            
-            document.addEventListener('touchend', function(e) {
-                const touchEndX = e.changedTouches[0].clientX;
-                const touchEndY = e.changedTouches[0].clientY;
-                const touchEndTime = Date.now();
-                
-                const deltaX = touchEndX - touchStartX;
-                const deltaY = touchEndY - touchStartY;
-                const deltaTime = touchEndTime - touchStartTime;
-                
-                // Detect swipe gestures
-                const swipeThreshold = 50;
-                const swipeVelocity = Math.abs(deltaX) / deltaTime;
-                
-                if (Math.abs(deltaX) > swipeThreshold && swipeVelocity > 0.3) {
-                    // Horizontal swipe detected
-                    if (deltaX > 0) {
-                        handleSwipeRight();
-                    } else {
-                        handleSwipeLeft();
-                    }
-                    
-                    // Haptic feedback for gesture
-                    if (navigator.vibrate) navigator.vibrate(20);
-                }
-                
-                // Detect pull-to-refresh prevention
-                if (window.scrollY === 0 && deltaY > 100 && deltaTime < 300) {
-                    e.preventDefault();
-                    
-                    // Visual feedback for pull-to-refresh prevention
-                    if (app && app.showMobileToast) {
-                        app.showMobileToast("Pull to refresh disabled");
-                    }
-                }
-            }, { passive: false });
-            
-            // Add gesture support for navigation
-            function handleSwipeLeft() {
-                // Navigate to next view if available
-                const currentView = document.querySelector('#view-route:not(.translate-x-full):not(.hidden)') ||
-                                   document.querySelector('#view-seat:not(.translate-x-full):not(.hidden)') ||
-                                   document.querySelector('#view-focus:not(.translate-x-full):not(.hidden)');
-                
-                if (currentView && currentView.id === 'view-route' && app.state.baseRoute) {
-                    app.confirmRoute();
-                } else if (currentView && currentView.id === 'view-seat' && app.state.selectedSeat) {
-                    app.startFocus();
-                }
-            }
-            
-            function handleSwipeRight() {
-                // Navigate to previous view if available
-                const currentView = document.querySelector('#view-seat:not(.translate-x-full):not(.hidden)');
-                const focusView = document.querySelector('#view-focus:not(.translate-x-full):not(.hidden)');
-                
-                if (currentView) {
-                    app.goBackToRoutes();
-                } else if (focusView) {
-                    app.abandonTrip();
-                }
-            }
-            
-            // Enhanced touch interactions for better UX
-            document.addEventListener('touchmove', function(e) {
-                // Prevent unwanted scrolling in focus mode
-                const isFocusMode = document.getElementById('view-focus').classList.contains('translate-x-full') === false;
-                if (isFocusMode && Math.abs(e.touches[0].clientY - touchStartY) > 10) {
-                    // Allow some scroll but prevent excessive movement
-                    if (Math.abs(e.touches[0].clientY - touchStartY) > window.innerHeight * 0.1) {
-                        e.preventDefault();
-                    }
-                }
-            }, { passive: false });
-        }
+
 
         // Enhanced notification system with mobile support
         if (!("Notification" in window)) {
@@ -1371,365 +890,14 @@
                     startTime: null,
                     activeStations: [],
                     animationFrameId: null,
-                    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
                     orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'
                 };
                 this.map = null;
                 this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
                 this.init();
-                this.setupMobileListeners();
             }
 
-            setupMobileListeners() {
-                if (!this.state.isMobile) return;
 
-                // Handle orientation changes with debouncing
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => {
-                        this.state.orientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
-                        this.handleOrientationChange();
-                        
-                        // Refresh map after orientation change
-                        if (this.map) {
-                            this.map.invalidateSize();
-                        }
-                    }, 150);
-                });
-
-                // Enhanced viewport change handling
-                window.addEventListener('resize', () => {
-                    clearTimeout(this.resizeTimeout);
-                    this.resizeTimeout = setTimeout(() => {
-                        this.handleViewportChange();
-                        
-                        // Update mobile state
-                        this.state.isMobile = window.innerWidth < 768;
-                    }, 300);
-                });
-
-                // Enhanced pull-to-refresh prevention
-                let touchStartY = 0;
-                let touchStartTime = 0;
-                
-                document.addEventListener('touchstart', (e) => {
-                    touchStartY = e.touches[0].clientY;
-                    touchStartTime = Date.now();
-                }, { passive: true });
-
-                document.addEventListener('touchmove', (e) => {
-                    const touchY = e.touches[0].clientY;
-                    const touchDiff = touchY - touchStartY;
-                    const touchTime = Date.now() - touchStartTime;
-                    
-                    // Enhanced pull-to-refresh detection
-                    if (window.scrollY === 0 && touchDiff > 0 && touchTime < 500) {
-                        if (touchDiff > 50) {
-                            e.preventDefault();
-                            
-                            // Show visual feedback
-                            this.showMobileToast("Pull to refresh disabled");
-                            this.hapticFeedback.light();
-                        }
-                    }
-                    
-                    // Handle overscroll in focus mode
-                    const focusView = document.getElementById('view-focus');
-                    if (focusView && !focusView.classList.contains('translate-x-full')) {
-                        if (touchDiff > 100) {
-                            e.preventDefault();
-                        }
-                    }
-                }, { passive: false });
-
-                // Enhanced haptic feedback system
-                this.hapticFeedback = {
-                    light: () => {
-                        if (navigator.vibrate) navigator.vibrate(15);
-                    },
-                    medium: () => {
-                        if (navigator.vibrate) navigator.vibrate([15, 50, 15]);
-                    },
-                    heavy: () => {
-                        if (navigator.vibrate) navigator.vibrate([25, 100, 25]);
-                    },
-                    success: () => {
-                        if (navigator.vibrate) navigator.vibrate([50, 25, 50]);
-                    },
-                    warning: () => {
-                        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 100]);
-                    }
-                };
-
-                // Add performance monitoring for mobile
-                this.setupPerformanceMonitoring();
-            }
-            
-            setupPerformanceMonitoring() {
-                // Monitor frame rate on mobile
-                let lastFrameTime = performance.now();
-                let frameCount = 0;
-                let fps = 0;
-                
-                const measureFPS = () => {
-                    const currentTime = performance.now();
-                    frameCount++;
-                    
-                    if (currentTime >= lastFrameTime + 1000) {
-                        fps = Math.round((frameCount * 1000) / (currentTime - lastFrameTime));
-                        frameCount = 0;
-                        lastFrameTime = currentTime;
-                        
-                        // Adjust animations based on performance
-                        if (fps < 30) {
-                            this.enablePerformanceMode();
-                        }
-                    }
-                    
-                    requestAnimationFrame(measureFPS);
-                };
-                
-                if (this.state.isMobile) {
-                    requestAnimationFrame(measureFPS);
-                }
-            }
-            
-            enablePerformanceMode() {
-                // Reduce animations for better performance
-                const style = document.createElement('style');
-                style.id = 'performance-mode';
-                style.textContent = `
-                    .ismobile * {
-                        animation-duration: 0.1s !important;
-                        transition-duration: 0.1s !important;
-                    }
-                    .train-marker-container {
-                        animation: none !important;
-                    }
-                `;
-                document.head.appendChild(style);
-                
-                this.showMobileToast("Performance mode enabled");
-            }
-
-            handleOrientationChange() {
-                // Recalculate map bounds and UI elements
-                if (this.map && this.routeLayers.border) {
-                    const isMobile = this.state.isMobile;
-                    this.map.invalidateSize();
-                    
-                    // Adjust padding based on orientation
-                    const paddingTopLeft = isMobile && this.state.orientation === 'portrait' 
-                        ? [0, window.innerHeight / 2] 
-                        : [400, 50];
-                    const paddingBottomRight = isMobile ? [0, 0] : [0, 0];
-
-                    if (this.routeLayers.border.getBounds().isValid()) {
-                        this.map.flyToBounds(this.routeLayers.border.getBounds(), {
-                            paddingTopLeft,
-                            paddingBottomRight,
-                            duration: 0.5
-                        });
-                    }
-                }
-
-                // Adjust focus mode layout for orientation
-                this.adjustFocusModeLayout();
-            }
-
-            handleViewportChange() {
-                // Handle virtual keyboard and mobile UI changes
-                const isKeyboardOpen = window.innerHeight < window.screen.height * 0.75;
-                
-                if (isKeyboardOpen) {
-                    // Hide non-essential UI elements when keyboard is open
-                    document.body.classList.add('keyboard-open');
-                } else {
-                    document.body.classList.remove('keyboard-open');
-                }
-
-                // Refresh map if needed
-                if (this.map) {
-                    setTimeout(() => this.map.invalidateSize(), 100);
-                }
-            }
-
-            adjustFocusModeLayout() {
-                const focusView = document.getElementById('view-focus');
-                if (!focusView) return;
-
-                const isPortrait = this.state.orientation === 'portrait';
-                const progressCircle = focusView.querySelector('div > div:nth-child(4)');
-                
-                if (isPortrait && this.state.isMobile) {
-                    // Optimize for portrait mode
-                    if (progressCircle) {
-                        progressCircle.style.width = '140px';
-                        progressCircle.style.height = '140px';
-                    }
-                    
-                    // Adjust timer font size
-                    const timerDisplay = document.getElementById('timer-display');
-                    if (timerDisplay) {
-                        timerDisplay.style.fontSize = '2rem';
-                    }
-                } else {
-                    // Landscape or desktop
-                    if (progressCircle) {
-                        progressCircle.style.width = '192px';
-                        progressCircle.style.height = '192px';
-                    }
-                    
-                    const timerDisplay = document.getElementById('timer-display');
-                    if (timerDisplay) {
-                        timerDisplay.style.fontSize = '2.5rem';
-                    }
-                }
-            }
-
-            mobileSeatSelect(seatNum, element) {
-                if (element.classList.contains('taken')) {
-                    this.hapticFeedback.light();
-                    return;
-                }
-
-                // Remove previous selection
-                document.querySelectorAll('.seat').forEach(seat => {
-                    if (!seat.classList.contains('taken')) {
-                        seat.classList.remove('bg-teal-500', 'text-white', 'border-teal-500');
-                        seat.classList.add('bg-white', 'text-slate-600');
-                    }
-                });
-
-                // Add new selection with haptic feedback
-                element.classList.remove('bg-white', 'text-slate-600');
-                element.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
-                this.hapticFeedback.medium();
-
-                this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
-                document.getElementById('confirm-seat-btn').disabled = false;
-                
-                // Add visual confirmation for mobile
-                if (this.state.isMobile) {
-                    this.showMobileToast(`Seat ${seatNum} selected`);
-                }
-            }
-
-            showMobileToast(message, options = {}) {
-                // Remove existing toast
-                const existingToast = document.querySelector('.mobile-toast');
-                if (existingToast) {
-                    existingToast.remove();
-                }
-
-                const {
-                    duration = 2500,
-                    type = 'default', // 'default', 'success', 'warning', 'error'
-                    position = 'top-20'
-                } = options;
-
-                // Enhanced toast styling based on type
-                let toastClass = 'mobile-toast fixed left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-2xl shadow-2xl z-[9999] text-sm font-medium backdrop-blur-sm border transition-all duration-300 ease-out';
-                let bgClass = '';
-                
-                switch (type) {
-                    case 'success':
-                        bgClass = 'bg-emerald-500/90 text-white border-emerald-400';
-                        break;
-                    case 'warning':
-                        bgClass = 'bg-amber-500/90 text-white border-amber-400';
-                        break;
-                    case 'error':
-                        bgClass = 'bg-red-500/90 text-white border-red-400';
-                        break;
-                    default:
-                        bgClass = 'bg-slate-900/90 text-white border-slate-700';
-                }
-
-                // Create enhanced toast
-                const toast = document.createElement('div');
-                toast.className = `${toastClass} ${bgClass} ${position}`;
-                
-                // Add icon based on type
-                let icon = '';
-                switch (type) {
-                    case 'success':
-                        icon = '<i class="fa-solid fa-check-circle mr-2"></i>';
-                        break;
-                    case 'warning':
-                        icon = '<i class="fa-solid fa-exclamation-triangle mr-2"></i>';
-                        break;
-                    case 'error':
-                        icon = '<i class="fa-solid fa-times-circle mr-2"></i>';
-                        break;
-                }
-                
-                toast.innerHTML = `${icon}${message}`;
-                document.body.appendChild(toast);
-
-                // Enhanced entrance animation
-                requestAnimationFrame(() => {
-                    toast.style.transform = 'translateX(-50%) translateY(-10px) scale(0.95)';
-                    toast.style.opacity = '0';
-                    
-                    requestAnimationFrame(() => {
-                        toast.style.transform = 'translateX(-50%) translateY(0) scale(1)';
-                        toast.style.opacity = '1';
-                    });
-                });
-
-                // Auto remove with exit animation
-                setTimeout(() => {
-                    toast.style.transform = 'translateX(-50%) translateY(-20px) scale(0.95)';
-                    toast.style.opacity = '0';
-                    
-                    setTimeout(() => {
-                        if (toast.parentNode) {
-                            toast.remove();
-                        }
-                    }, 300);
-                }, duration);
-
-                // Add tap to dismiss
-                toast.addEventListener('click', () => {
-                    toast.style.transform = 'translateX(-50%) translateY(-20px) scale(0.95)';
-                    toast.style.opacity = '0';
-                    setTimeout(() => toast.remove(), 200);
-                }, { passive: true });
-
-                return toast;
-            }
-            
-            showMobileProgress(message, progress = 0) {
-                this.hideMobileProgress();
-                
-                const progressToast = document.createElement('div');
-                progressToast.className = 'mobile-progress fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-slate-900/95 text-white px-8 py-6 rounded-3xl shadow-2xl z-[9999] backdrop-blur-sm border border-slate-700';
-                progressToast.innerHTML = `
-                    <div class="text-center">
-                        <div class="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-                        <div class="text-sm font-medium mb-3">${message}</div>
-                        <div class="w-48 bg-slate-700 rounded-full h-2">
-                            <div class="bg-teal-500 h-2 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(progressToast);
-                return progressToast;
-            }
-            
-            hideMobileProgress() {
-                const existingProgress = document.querySelector('.mobile-progress');
-                if (existingProgress) {
-                    existingProgress.remove();
-                }
-            }
-            
-            updateMobileProgress(progress) {
-                const progressBar = document.querySelector('.mobile-progress .bg-teal-500');
-                if (progressBar) {
-                    progressBar.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-                }
-            }
 
             async init() {
                 this.initMap();
@@ -1996,11 +1164,10 @@
                     this.routeLayers.endMarker = L.circleMarker(endCoord, { color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.9, radius: 6 }).addTo(this.map).bindTooltip("Arrive", { permanent: true, direction: 'top', className: 'station-label' });
                 }
 
-                const isMobile = window.innerWidth < 768;
                 if (this.routeLayers.border.getBounds().isValid()) {
                     this.map.flyToBounds(this.routeLayers.border.getBounds(), {
-                        paddingBottomRight: isMobile ? [0, window.innerHeight / 2] : [0, 0],
-                        paddingTopLeft: isMobile ? [0, 0] : [400, 50],
+                        paddingBottomRight: [0, 0],
+                        paddingTopLeft: [400, 50],
                         duration: 1.0
                     });
                 }
@@ -2033,15 +1200,12 @@
             renderSeats() {
                 const grid = document.getElementById('seat-grid');
                 const isGreen = (this.state.currentCar === 8);
-                const isMobile = this.state.isMobile;
                 
                 if (isGreen) {
-                    grid.className = isMobile ? "grid grid-cols-5 gap-4 p-4" : "grid grid-cols-5 gap-2";
+                    grid.className = "grid grid-cols-5 gap-2";
                     grid.innerHTML = Array.from({ length: 8 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile ? 
-                            "seat h-14 rounded-xl border-2 flex items-center justify-center text-base font-bold cursor-pointer bg-white touch-target mobile-button" :
-                            "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
+                        const seatClass = "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
                         return `<div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
                                 <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
                                 <div class="flex items-center justify-center text-slate-300 text-sm font-mono font-bold bg-slate-50 rounded-lg">${r}</div>
@@ -2049,12 +1213,10 @@
                                 <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>`;
                     }).join('');
                 } else {
-                    grid.className = isMobile ? "flex flex-col gap-4 p-4" : "flex flex-col gap-2";
+                    grid.className = "flex flex-col gap-2";
                     grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile ?
-                            "seat w-14 h-14 rounded-xl border-2 flex items-center justify-center text-base font-bold cursor-pointer bg-white touch-target mobile-button" :
-                            "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
+                        const seatClass = "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
                         return `<div class="flex justify-between items-center w-full bg-slate-50/50 rounded-2xl p-3">
                                     <div class="flex gap-3">
                                         <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
@@ -2069,44 +1231,15 @@
                                 </div>`;
                     }).join('');
                 }
-                
-                // Add mobile-specific seat interaction enhancements
-                if (isMobile) {
-                    this.setupMobileSeatInteractions();
-                }
             }
             
-            setupMobileSeatInteractions() {
-                // Add visual feedback for seat selection on mobile
-                const seats = document.querySelectorAll('.seat');
-                seats.forEach(seat => {
-                    seat.addEventListener('touchstart', (e) => {
-                        // Visual feedback for touch
-                        seat.style.transform = 'scale(0.95)';
-                        this.hapticFeedback.light();
-                    }, { passive: true });
-                    
-                    seat.addEventListener('touchend', (e) => {
-                        // Reset transform after touch
-                        setTimeout(() => {
-                            if (!seat.classList.contains('selected')) {
-                                seat.style.transform = '';
-                            }
-                        }, 150);
-                    }, { passive: true });
-                });
-            }
+
             selectSeat(seatNum, el) {
-                if (this.state.isMobile) {
-                    this.mobileSeatSelect(seatNum, el);
-                } else {
-                    // Desktop behavior
-                    if (el.classList.contains('taken')) return;
-                    document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
-                    el.classList.remove('bg-white', 'text-slate-600'); el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
-                    this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
-                    document.getElementById('confirm-seat-btn').disabled = false;
-                }
+                if (el.classList.contains('taken')) return;
+                document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
+                el.classList.remove('bg-white', 'text-slate-600'); el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
+                this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
+                document.getElementById('confirm-seat-btn').disabled = false;
             }
             startFocus() {
                 const overlay = document.getElementById('door-overlay');
@@ -2225,16 +1358,10 @@
         function handleUserLeft() {
             // Update UI (though user can't see it immediately
             document.title = "⚠️ Come back!";
-
-            // Mobile-friendly notifications
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             
             if ('Notification' in window && Notification.permission === 'granted') {
-                // Strategy A: System Notification (works better on mobile)
                 const notification = new Notification("Focus Lost!", {
-                    body: isMobile ? 
-                        "You switched apps. Return to continue your focus session." :
-                        "You switched tabs. Come back to finish your task!",
+                    body: "You switched tabs. Come back to finish your task!",
                     icon: "https://cdn-icons-png.flaticon.com/512/564/564619.png",
                     tag: "focus-session",
                     requireInteraction: true
@@ -2246,41 +1373,14 @@
                 };
             }
 
-            // Mobile-specific fallback
-            if (isMobile) {
-                // Strategy B: Haptic feedback if available
-                if (navigator.vibrate) {
-                    navigator.vibrate([200, 100, 200]); // Strong vibration pattern
+            // Desktop alert fallback
+            setTimeout(() => {
+                alert("You switched tabs! Your Train May Need to stop.");
+                if (app && app.state && app.state.isFocusing) {
+                    cancelAnimationFrame(app.state.animationFrameId);
+                    location.reload();
                 }
-                
-                // Strategy C: Show mobile toast instead of alert
-                setTimeout(() => {
-                    if (app && app.showMobileToast) {
-                        app.showMobileToast("⚠️ Focus lost! Return to continue");
-                    }
-                    
-                    // Auto-stop after delay for mobile
-                    setTimeout(() => {
-                        if (app && app.state && app.state.isFocusing) {
-                            cancelAnimationFrame(app.state.animationFrameId);
-                            console.log("Auto-stopped focus session due to tab switch");
-                            // Don't reload immediately on mobile, just stop the session
-                            if (confirm("Focus session interrupted. Would you like to restart?")) {
-                                location.reload();
-                            }
-                        }
-                    }, 5000);
-                }, 1000);
-            } else {
-                // Desktop alert fallback
-                setTimeout(() => {
-                    alert("You switched tabs! Your Train May Need to stop.");
-                    if (app && app.state && app.state.isFocusing) {
-                        cancelAnimationFrame(app.state.animationFrameId);
-                        location.reload();
-                    }
-                }, 3000);
-            }
+            }, 3000);
         }
 
         function handleUserReturned() {
