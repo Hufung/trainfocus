@@ -70,77 +70,11 @@
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             }
             
-            /* Enhanced controls panel - Full height with better bottom spacing */
+            /* Enhanced controls panel */
             #controls-panel {
                 border-radius: 20px 20px 0 0;
-                max-height: 90vh;
-                height: 90vh;
+                max-height: 85vh;
                 overflow-y: auto;
-                padding-bottom: env(safe-area-inset-bottom, 20px);
-            }
-            
-            /* Mobile navigation improvements */
-            .mobile-nav-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 40;
-                opacity: 0;
-                visibility: hidden;
-                transition: all 0.3s ease;
-            }
-            
-            .mobile-nav-overlay.active {
-                opacity: 1;
-                visibility: visible;
-            }
-            
-            /* Mobile header improvements */
-            header {
-                padding-top: env(safe-area-inset-top, 0);
-            }
-            
-            /* Mobile map adjustments */
-            #map {
-                height: calc(100vh - 56px - env(safe-area-inset-top, 0));
-            }
-            
-            /* Mobile focus mode improvements */
-            #view-focus {
-                padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 20px));
-            }
-            
-            /* Mobile seat selection improvements */
-            #view-seat {
-                padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 20px));
-            }
-            
-            /* Mobile route selection improvements */
-            #view-route {
-                padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 20px));
-            }
-            
-            /* Mobile car tabs - better scroll */
-            .car-tabs-container {
-                padding: 8px 0;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-            
-            .car-tabs-container::-webkit-scrollbar {
-                display: none;
-            }
-            
-            /* Mobile seat grid improvements */
-            .seat-grid-mobile {
-                padding: 12px;
-                border-radius: 12px;
-                background: #f8fafc;
             }
         }
 
@@ -224,6 +158,24 @@
                 max-height: 85vh;
                 overflow-y: auto;
             }
+        }
+
+        /* Mobile sidebar mode */
+        .mobile-sidebar {
+            position: absolute !important;
+            left: 0 !important;
+            top: 56px !important;
+            width: 280px !important;
+            height: calc(100vh - 56px) !important;
+            border-radius: 0 !important;
+            border-right: 1px solid #e2e8f0 !important;
+            border-top: 0 !important;
+            z-index: 50 !important;
+            max-height: none !important;
+        }
+
+        .mobile-bottom {
+            /* default mobile bottom sheet */
         }
 
 
@@ -463,58 +415,6 @@
             padding: 8px 12px;
             border-radius: 6px;
         }
-        
-        /* Enhanced mobile seat selection feedback */
-        @media (max-width: 768px) {
-            .seat.selected {
-                background: linear-gradient(135deg, #0f766e, #14b8a6) !important;
-                color: white !important;
-                border-color: #0f766e !important;
-                box-shadow: 0 4px 12px rgba(15, 118, 110, 0.4);
-                transform: scale(1.05);
-            }
-            
-            .seat:active:not(.taken):not(.selected) {
-                transform: scale(0.95);
-                background: #f0fdfa;
-                border-color: #14b8a6;
-            }
-            
-            /* Mobile focus mode timer enhancements */
-            #view-focus .relative {
-                background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-                box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-            }
-            
-            /* Mobile progress bar enhancement */
-            .bg-teal-500 {
-                background: linear-gradient(90deg, #0f766e, #14b8a6, #2dd4bf);
-                box-shadow: 0 2px 8px rgba(15, 118, 110, 0.3);
-            }
-        }
-        
-        /* Mobile map improvements */
-        @media (max-width: 768px) {
-            .leaflet-control-container .leaflet-control {
-                margin: 8px !important;
-            }
-            
-            .leaflet-popup-content-wrapper {
-                border-radius: 12px;
-                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-            }
-        }
-        
-        /* Mobile loading improvements */
-        @media (max-width: 768px) {
-            #loading-screen {
-                background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
-            }
-            
-            #loading-screen i {
-                animation: bounce 2s infinite;
-            }
-        }
 
 
 
@@ -585,66 +485,6 @@
                 height: 180px !important;
             }
         }
-        
-        /* Large mobile landscape optimizations */
-        @media (max-width: 768px) and (orientation: landscape) {
-            #controls-panel {
-                height: 95vh;
-                max-height: 95vh;
-            }
-            
-            #view-route, #view-seat, #view-focus {
-                padding: 12px 16px;
-            }
-            
-            .car-tabs-container {
-                max-height: 80px;
-                overflow-y: hidden;
-                overflow-x: auto;
-            }
-            
-            .seat-grid-mobile {
-                max-height: calc(95vh - 200px);
-                overflow-y: auto;
-            }
-        }
-        
-        /* Extra small mobile devices */
-        @media (max-width: 375px) {
-            #controls-panel {
-                height: 95vh;
-                max-height: 95vh;
-            }
-            
-            .route-card {
-                padding: 12px;
-                margin: 6px 0;
-            }
-            
-            .mobile-button {
-                min-height: 44px;
-                padding: 12px 16px;
-                font-size: 14px;
-            }
-            
-            .car-tab {
-                min-width: 48px;
-                min-height: 48px;
-            }
-        }
-        
-        /* Very large mobile devices */
-        @media (min-width: 414px) and (max-width: 768px) {
-            #controls-panel {
-                max-height: 85vh;
-            }
-            
-            .seat-grid-mobile .seat {
-                width: 56px;
-                height: 56px;
-                font-size: 16px;
-            }
-        }
     </style>
 </head>
 
@@ -668,10 +508,15 @@
                 <option value="tc">繁體中文</option>
                 <option value="ja">日本語</option>
             </select>
-            <button onclick="app.toggleHistory()" 
+            <button onclick="app.toggleHistory()"
                 class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
                 <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
                     id="nav-history">Travel Log</span>
+            </button>
+            <button onclick="app.toggleMobileMode()"
+                class="md:hidden text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target"
+                id="mobile-mode-btn">
+                <i class="fa-solid fa-bars"></i>
             </button>
         </div>
     </header>
@@ -686,8 +531,8 @@
         </div>
 
         <div id="controls-panel" class="absolute bg-white shadow-2xl z-50 flex flex-col
-            w-full h-[90vh] bottom-0 rounded-t-2xl border-t border-slate-200 transform translate-y-0 transition-transform duration-300
-            md:w-96 md:h-full md:top-0 md:left-0 md:rounded-none md:border-r md:border-t-0 md:transform-none"
+            w-full h-[60vh] bottom-0 rounded-t-2xl border-t border-slate-200
+            md:w-96 md:h-full md:top-0 md:left-0 md:rounded-none md:border-r md:border-t-0">
 
             <div class="w-full flex justify-center pt-3 pb-1 md:hidden">
                 <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
@@ -765,12 +610,12 @@
                                 class="fa-solid fa-arrow-left"></i></button>
                         <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
                     </div>
-                    <div class="car-tabs-container overflow-x-auto pb-2 mb-2" id="car-list-container"></div>
+                    <div class="flex gap-2 overflow-x-auto pb-2 mb-2" id="car-list-container"></div>
                     <p class="text-slate-500 text-sm mb-2" id="lbl-car-info">Car 1 - Ordinary</p>
                     <div class="flex-1 flex flex-col overflow-hidden">
                         <div
                             class="flex-1 flex justify-center items-start bg-slate-50 rounded-lg border border-slate-200 p-4 overflow-y-auto">
-                            <div id="seat-grid" class="seat-grid-mobile grid gap-y-3 w-full"></div>
+                            <div id="seat-grid" class="grid gap-y-3"></div>
                         </div>
                         <div class="mt-4">
                             <div class="flex justify-between text-xs text-slate-400 mb-3">
@@ -831,16 +676,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Navigation Overlay -->
-        <div id="mobile-nav-overlay" class="mobile-nav-overlay"></div>
-
-        <!-- Mobile Toggle Button for Controls Panel -->
-        <button id="mobile-controls-toggle" 
-            class="fixed bottom-4 right-4 z-50 bg-teal-600 text-white rounded-full w-14 h-14 shadow-lg hover:bg-teal-700 transition-all duration-300 md:hidden flex items-center justify-center touch-target"
-            onclick="app.toggleMobileControls()">
-            <i class="fa-solid fa-chevron-up text-xl"></i>
-        </button>
 
         <div id="history-modal"
             class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
@@ -1079,12 +914,30 @@
                     activeStations: [],
                     animationFrameId: null,
                     orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
-                    isMobile: window.innerWidth <= 768,
-                    mobileControlsVisible: false
+                    mobileMode: window.innerWidth < 768
                 };
                 this.map = null;
-                this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
+                this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null };
                 this.init();
+            }
+
+            toggleMobileMode() {
+                this.state.mobileMode = !this.state.mobileMode;
+                this.updateMobileLayout();
+            }
+
+            updateMobileLayout() {
+                const panel = document.getElementById('controls-panel');
+                const map = document.getElementById('map');
+                if (this.state.mobileMode) {
+                    panel.classList.add('mobile-sidebar');
+                    panel.classList.remove('mobile-bottom');
+                    map.style.marginLeft = '280px';
+                } else {
+                    panel.classList.add('mobile-bottom');
+                    panel.classList.remove('mobile-sidebar');
+                    map.style.marginLeft = '0';
+                }
             }
 
 
@@ -1096,38 +949,9 @@
                 this.renderRoutes();
                 this.loadHistory();
                 this.setLanguage('en');
-                this.setupMobileInteractions();
+                this.updateMobileLayout();
                 document.getElementById('loading-screen').style.opacity = '0';
                 setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 500);
-            }
-            
-            setupMobileInteractions() {
-                // Handle orientation changes
-                window.addEventListener('orientationchange', () => {
-                    setTimeout(() => this.handleOrientationChange(), 100);
-                });
-                
-                window.addEventListener('resize', () => {
-                    this.handleOrientationChange();
-                });
-                
-                // Handle mobile navigation overlay clicks
-                const overlay = document.getElementById('mobile-nav-overlay');
-                if (overlay) {
-                    overlay.addEventListener('click', () => {
-                        this.closeMobileControls();
-                    });
-                }
-                
-                // Handle back navigation in mobile views
-                const backButtons = document.querySelectorAll('[onclick*="goBackToRoutes"], [onclick*="cancelRouteSelection"]');
-                backButtons.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        if (this.state.isMobile) {
-                            setTimeout(() => this.closeMobileControls(), 300);
-                        }
-                    });
-                });
             }
 
             async loadExternalData() {
@@ -1420,66 +1244,35 @@
             renderSeats() {
                 const grid = document.getElementById('seat-grid');
                 const isGreen = (this.state.currentCar === 8);
-                const isMobile = this.state.isMobile;
                 
                 if (isGreen) {
-                    grid.className = isMobile ? "grid grid-cols-3 gap-3 md:grid-cols-5" : "grid grid-cols-5 gap-2";
+                    grid.className = "grid grid-cols-5 gap-2";
                     grid.innerHTML = Array.from({ length: 8 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile 
-                            ? "seat h-12 rounded-lg border-2 flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-manipulation"
-                            : "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
-                        return isMobile 
-                            ? `<div class="flex flex-col items-center">
-                                <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
-                                <div class="text-xs font-mono text-slate-400 mt-1">${r}</div>
-                               </div>
-                               <div class="flex flex-col items-center">
-                                <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
-                                <div class="text-xs font-mono text-slate-400 mt-1">${r}</div>
-                               </div>
-                               <div class="flex flex-col items-center">
-                                <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
-                                <div class="text-xs font-mono text-slate-400 mt-1">${r}</div>
-                               </div>`
-                            : `<div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
+                        const seatClass = "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
+                        return `<div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
                                 <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
                                 <div class="flex items-center justify-center text-slate-300 text-sm font-mono font-bold bg-slate-50 rounded-lg">${r}</div>
                                 <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
                                 <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>`;
                     }).join('');
                 } else {
-                    grid.className = isMobile ? "flex flex-col gap-4" : "flex flex-col gap-2";
+                    grid.className = "flex flex-col gap-2";
                     grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
                         const r = i + 1;
-                        const seatClass = isMobile 
-                            ? "seat w-12 h-12 rounded-xl border-2 flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-manipulation"
-                            : "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
-                        return isMobile 
-                            ? `<div class="flex justify-between items-center w-full bg-slate-100/80 rounded-3xl p-4 mx-2">
-                                <div class="flex gap-4">
-                                    <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
-                                    <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
-                                    <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
-                                </div>
-                                <span class="text-xl text-slate-400 font-mono w-12 text-center">${r}</span>
-                                <div class="flex gap-4">
-                                    <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>
-                                    <div onclick="app.selectSeat('${r}E', this)" class="${seatClass}">E</div>
-                                </div>
-                            </div>`
-                            : `<div class="flex justify-between items-center w-full bg-slate-50/50 rounded-2xl p-3">
-                                <div class="flex gap-3">
-                                    <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
-                                    <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
-                                    <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
-                                </div>
-                                <span class="text-base text-slate-500 font-mono w-10 text-center bg-white rounded-xl py-2">${r}</span>
-                                <div class="flex gap-3">
-                                    <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>
-                                    <div onclick="app.selectSeat('${r}E', this)" class="${seatClass}">E</div>
-                                </div>
-                            </div>`;
+                        const seatClass = "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
+                        return `<div class="flex justify-between items-center w-full bg-slate-50/50 rounded-2xl p-3">
+                                    <div class="flex gap-3">
+                                        <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
+                                        <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
+                                        <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
+                                    </div>
+                                    <span class="text-base text-slate-500 font-mono w-10 text-center bg-white rounded-xl py-2">${r}</span>
+                                    <div class="flex gap-3">
+                                        <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>
+                                        <div onclick="app.selectSeat('${r}E', this)" class="${seatClass}">E</div>
+                                    </div>
+                                </div>`;
                     }).join('');
                 }
             }
@@ -1603,44 +1396,6 @@
             loadHistory() { const history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); const list = document.getElementById('history-list'); if (history.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>'; return; } list.innerHTML = history.map(h => `<div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center"><div><div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div><div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div></div><div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div></div>`).join(''); }
             toggleHistory() { document.getElementById('history-modal').classList.toggle('hidden'); }
             abandonTrip() { if (confirm(TRANSLATIONS[this.state.language].confirmStop)) { cancelAnimationFrame(this.state.animationFrameId); location.reload(); } }
-            
-            // Mobile-specific methods
-            toggleMobileControls() {
-                const controlsPanel = document.getElementById('controls-panel');
-                const toggleBtn = document.getElementById('mobile-controls-toggle');
-                const overlay = document.getElementById('mobile-nav-overlay');
-                
-                if (this.state.mobileControlsVisible) {
-                    controlsPanel.style.transform = 'translateY(100%)';
-                    overlay.classList.remove('active');
-                    this.state.mobileControlsVisible = false;
-                    toggleBtn.querySelector('i').className = 'fa-solid fa-chevron-up text-xl';
-                } else {
-                    controlsPanel.style.transform = 'translateY(0)';
-                    overlay.classList.add('active');
-                    this.state.mobileControlsVisible = true;
-                    toggleBtn.querySelector('i').className = 'fa-solid fa-chevron-down text-xl';
-                }
-            }
-            
-            closeMobileControls() {
-                if (this.state.isMobile && this.state.mobileControlsVisible) {
-                    this.toggleMobileControls();
-                }
-            }
-            
-            handleOrientationChange() {
-                const wasMobile = this.state.isMobile;
-                this.state.isMobile = window.innerWidth <= 768;
-                this.state.orientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
-                
-                // Hide mobile controls when switching to desktop
-                if (wasMobile && !this.state.isMobile) {
-                    this.state.mobileControlsVisible = false;
-                    document.getElementById('mobile-nav-overlay').classList.remove('active');
-                    document.getElementById('controls-panel').style.transform = 'none';
-                }
-            }
         };
 
         const app = new App();
