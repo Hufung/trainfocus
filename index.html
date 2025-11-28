@@ -38,35 +38,161 @@
             -ms-text-size-adjust: 100%;
         }
 
-        /* Mobile-specific optimizations */
+        /* Computer-specific styles */
+        @media (min-width: 769px) {
+            .desktop-layout {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+            
+            .desktop-main {
+                display: flex;
+                flex: 1;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .desktop-sidebar {
+                width: 400px;
+                height: 100%;
+                background: white;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                z-index: 50;
+                overflow-y: auto;
+            }
+            
+            .desktop-map {
+                flex: 1;
+                height: 100%;
+                position: relative;
+            }
+            
+            .desktop-overlay {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                background: rgba(255,255,255,0.9);
+                backdrop-filter: blur(10px);
+                padding: 12px 16px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                z-index: 40;
+                max-width: 250px;
+            }
+            
+            /* Hide mobile-specific elements on desktop */
+            .mobile-only {
+                display: none !important;
+            }
+        }
+
+        /* Mobile-specific styles */
         @media (max-width: 768px) {
+            .mobile-layout {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+            
+            .mobile-main {
+                flex: 1;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .mobile-map {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            
+            .mobile-controls {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: white;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+                z-index: 100;
+                transition: transform 0.3s ease-in-out;
+                max-height: 85vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .mobile-controls.hidden {
+                transform: translateY(100%);
+            }
+            
+            .mobile-controls .drag-handle {
+                width: 40px;
+                height: 4px;
+                background: #e2e8f0;
+                border-radius: 2px;
+                margin: 12px auto;
+            }
+            
+            /* Hide desktop-specific elements on mobile */
+            .desktop-only {
+                display: none !important;
+            }
+            
+            /* Mobile optimizations */
             body {
-                /* Prevent pull-to-refresh and overscroll */
                 overscroll-behavior: none;
                 touch-action: manipulation;
             }
             
-            /* Better touch targets on mobile */
-            .seat {
+            .seat, .car-tab, button, select, .route-card {
                 min-height: 44px;
-                min-width: 44px;
             }
             
             .car-tab {
                 min-width: 56px;
-                min-height: 56px;
-            }
-            
-            button, select, .route-card {
-                min-height: 44px;
             }
             
             /* Better mobile typography */
             .text-xs {
                 font-size: 0.8rem;
             }
+            
+            /* Mobile focus mode improvements */
+            #view-focus {
+                padding: 20px 16px;
+            }
+
+            #next-station-display {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+
+            #timer-display {
+                font-size: 2.5rem;
+            }
+
+            /* Larger progress circle for mobile */
+            #view-focus > div > div:nth-child(4) {
+                width: 160px !important;
+                height: 160px !important;
+            }
+            
+            /* Mobile header improvements */
+            header {
+                height: 56px;
+                padding: 0 16px;
+            }
+
+            header select {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
         }
 
+        /* Common styles for both layouts */
         .train-font {
             font-family: 'Roboto Mono', monospace;
         }
@@ -117,7 +243,7 @@
             }
         }
 
-        /* Mobile-first button styles */
+        /* Button styles */
         .mobile-button {
             min-height: 44px;
             padding: 12px 16px;
@@ -133,50 +259,6 @@
                 min-height: 48px;
                 font-size: 16px;
                 padding: 14px 20px;
-            }
-        }
-
-        #controls-panel {
-            transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
-        }
-
-        /* Mobile-optimized controls panel */
-        @media (max-width: 768px) {
-            #controls-panel {
-                border-radius: 20px 20px 0 0;
-                /* Prevent keyboard viewport issues */
-                max-height: 85vh;
-                overflow-y: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            
-            /* Better mobile scroll handling */
-            .overflow-y-auto {
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                -ms-overflow-style: none;
-            }
-            
-            .overflow-y-auto::-webkit-scrollbar {
-                display: none;
-            }
-        }
-
-        /* Mobile slide-up animation improvements */
-        @media (max-width: 768px) {
-            .mobile-slide-up {
-                animation: slideUp 0.3s ease-out;
-            }
-            
-            @keyframes slideUp {
-                from {
-                    transform: translateY(100%);
-                    opacity: 0;
-                }
-                to {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
             }
         }
 
@@ -305,15 +387,6 @@
             margin-top: 2px;
         }
 
-        /* Mobile-specific car tab improvements */
-        @media (max-width: 768px) {
-            .car-tab {
-                width: 56px;
-                height: 56px;
-                margin: 0 2px;
-            }
-        }
-
         .shinkansen-door-window {
             width: 140px;
             height: 220px;
@@ -373,56 +446,13 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        /* Mobile focus mode improvements */
+        /* Mobile slide-up animation improvements */
         @media (max-width: 768px) {
-            #view-focus {
-                padding: 20px 16px;
+            .mobile-slide-up {
+                animation: slideUp 0.3s ease-out;
             }
-
-            #next-station-display {
-                font-size: 1.5rem;
-                margin-bottom: 20px;
-            }
-
-            #timer-display {
-                font-size: 2.5rem;
-            }
-
-            /* Larger progress circle for mobile */
-            #view-focus > div > div:nth-child(4) {
-                width: 160px !important;
-                height: 160px !important;
-            }
-        }
-
-        /* Mobile header improvements */
-        @media (max-width: 768px) {
-            header {
-                height: 56px;
-                padding: 0 16px;
-            }
-
-            header select {
-                font-size: 14px;
-                padding: 6px 8px;
-            }
-
-            /* Hide text on very small screens, show icons */
-            @media (max-width: 360px) {
-                #nav-history {
-                    display: none;
-                }
-            }
-        }
-
-        /* Mobile modal improvements */
-        @media (max-width: 768px) {
-            #history-modal > div {
-                border-radius: 16px 16px 0 0;
-                animation: slideUpModal 0.3s ease-out;
-            }
-
-            @keyframes slideUpModal {
+            
+            @keyframes slideUp {
                 from {
                     transform: translateY(100%);
                     opacity: 0;
@@ -431,21 +461,6 @@
                     transform: translateY(0);
                     opacity: 1;
                 }
-            }
-        }
-
-        /* Mobile door overlay improvements */
-        @media (max-width: 768px) {
-            .shinkansen-door-window {
-                width: 100px;
-                height: 160px;
-                border-width: 6px;
-            }
-
-            .door-warning-sticker {
-                font-size: 8px;
-                width: 80px;
-                height: 24px;
             }
         }
 
@@ -473,11 +488,6 @@
             .train-thumb {
                 width: 50px;
                 height: 50px;
-            }
-
-            /* Adjust view-route padding on mobile */
-            #view-route {
-                padding: 16px;
             }
         }
 
@@ -511,23 +521,6 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-        }
-
-        /* Responsive display utilities */
-        .mobile-only {
-            display: none;
-        }
-
-        .ismobile .mobile-only {
-            display: block;
-        }
-
-        .desktop-only {
-            display: block;
-        }
-
-        .ismobile .desktop-only {
-            display: none;
         }
 
         .keyboard-open #map {
@@ -586,7 +579,7 @@
 
         /* Mobile landscape optimizations */
         @media (max-width: 768px) and (orientation: landscape) {
-            #controls-panel {
+            .mobile-controls {
                 max-height: 90vh;
             }
 
@@ -602,8 +595,8 @@
 
         /* Tablet optimizations */
         @media (min-width: 769px) and (max-width: 1024px) {
-            #controls-panel {
-                width: 450px;
+            .desktop-sidebar {
+                width: 380px;
             }
 
             .route-card {
@@ -627,10 +620,63 @@
                 height: 180px !important;
             }
         }
+        
+        /* View transitions */
+        .view {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        .view.hidden {
+            display: none;
+        }
+        
+        .view.route-view {
+            transform: translateX(0);
+        }
+        
+        .view.route-view.hidden {
+            transform: translateX(-100%);
+        }
+        
+        .view.seat-view {
+            transform: translateX(0);
+        }
+        
+        .view.seat-view.hidden {
+            transform: translateX(100%);
+        }
+        
+        .view.focus-view {
+            transform: translateX(0);
+        }
+        
+        .view.focus-view.hidden {
+            transform: translateX(100%);
+        }
+        
+        /* Back button styles */
+        .back-button {
+            display: flex;
+            align-items: center;
+            color: #64748b;
+            transition: color 0.2s ease;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+        
+        .back-button:hover {
+            color: #0f766e;
+            background-color: #f1f5f9;
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
     </style>
 </head>
 
-<body class="h-screen w-screen overflow-hidden flex flex-col text-slate-800">
+<body class="h-screen w-screen overflow-hidden text-slate-800">
 
     <div id="loading-screen">
         <i class="fa-solid fa-train text-teal-600 text-4xl mb-4 animate-bounce"></i>
@@ -638,214 +684,367 @@
         <p class="text-sm text-slate-500 mt-2">Downloading routes and stations</p>
     </div>
 
-    <header class="bg-slate-900 text-white h-14 md:h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
-        <div class="flex items-center gap-3">
-            <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
-            <h1 class="font-bold text-base md:text-xl tracking-wide" id="app-title">RAIL FOCUS</h1>
-        </div>
-        <div class="flex items-center gap-2 md:gap-3">
-            <select id="lang-select" onchange="app.setLanguage(this.value)"
-                class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 md:p-1 focus:outline-none focus:border-teal-500 mobile-select">
-                <option value="en">English</option>
-                <option value="tc">繁體中文</option>
-                <option value="ja">日本語</option>
-            </select>
-            <button onclick="app.toggleHistory()" 
-                class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
-                <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
-                    id="nav-history">Travel Log</span>
-            </button>
-        </div>
-    </header>
-
-    <main class="flex-1 relative overflow-hidden w-full h-full">
-        <div id="map" class="absolute inset-0"></div>
-
-        <div id="map-overlay"
-            class="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg z-[40] hidden md:block pointer-events-none">
-            <div class="text-xs font-bold text-slate-500 uppercase" id="lbl-current-loc">Current Location</div>
-            <div id="current-loc-text" class="text-sm font-mono">Select a route...</div>
-        </div>
-
-        <div id="controls-panel" class="absolute bg-white shadow-2xl z-50 flex flex-col
-            w-full h-[60vh] bottom-0 rounded-t-2xl border-t border-slate-200
-            md:w-96 md:h-full md:top-0 md:left-0 md:rounded-none md:border-r md:border-t-0">
-
-            <div class="w-full flex justify-center pt-3 pb-1 md:hidden">
-                <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
+    <!-- Desktop Layout -->
+    <div class="desktop-layout desktop-only">
+        <header class="bg-slate-900 text-white h-14 flex items-center justify-between px-6 shadow-md z-50">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
+                <h1 class="font-bold text-xl tracking-wide" id="app-title">RAIL FOCUS</h1>
             </div>
+            <div class="flex items-center gap-3">
+                <select id="lang-select-desktop" onchange="app.setLanguage(this.value)"
+                    class="bg-slate-800 text-white border border-slate-600 text-sm rounded p-1 focus:outline-none focus:border-teal-500">
+                    <option value="en">English</option>
+                    <option value="tc">繁體中文</option>
+                    <option value="ja">日本語</option>
+                </select>
+                <button onclick="app.toggleHistory()" 
+                    class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800">
+                    <i class="fa-solid fa-clock-rotate-left mr-2"></i><span id="nav-history-desktop">Travel Log</span>
+                </button>
+            </div>
+        </header>
 
-            <div class="relative flex-1 overflow-hidden">
-
+        <div class="desktop-main">
+            <div class="desktop-sidebar">
                 <!-- Route Selection -->
-                <div id="view-route"
-                    class="flex flex-col h-full p-6 absolute inset-0 bg-white transition-transform duration-300">
-                    <h2 class="text-xl md:text-2xl font-bold mb-1 text-slate-800" id="lbl-select-route">Select Route
-                    </h2>
-                    <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc">Choose your line and stations.</p>
+                <div id="view-route-desktop" class="view route-view flex flex-col h-full p-6 bg-white">
+                    <h2 class="text-2xl font-bold mb-1 text-slate-800" id="lbl-select-route-desktop">Select Route</h2>
+                    <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc-desktop">Choose your line and stations.</p>
 
-                    <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-64 md:pb-0" id="route-list"></div>
+                    <div class="space-y-3 overflow-y-auto flex-1 pr-2" id="route-list-desktop"></div>
 
-                    <div id="route-confirm-container"
-                        class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl md:rounded-xl h-full md:max-h-none overflow-y-auto md:overflow-y-visible">
-                        <div class="flex justify-between items-center mb-2">
-                            <button onclick="app.cancelRouteSelection()"
-                                class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition touch-target">
-                                <i class="fa-solid fa-chevron-down mr-1"></i> <span class="text-xs font-bold"
-                                    id="lbl-back-route">Back</span>
-                            </button>
-                        </div>
-
-                        <div id="selected-train-display" class="hidden">
-                            <img id="train-hero-img" src="" class="train-hero" alt="Train Model">
+                    <div id="route-confirm-container-desktop"
+                        class="mt-4 p-4 bg-white border-t border-slate-100 transition-all duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+                        <div id="selected-train-display-desktop" class="hidden">
+                            <img id="train-hero-img-desktop" src="" class="train-hero" alt="Train Model">
                             <div class="flex justify-between items-center mb-2">
                                 <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">Model:
-                                    <span id="train-model-name" class="text-slate-800"></span></span>
+                                    <span id="train-model-name-desktop" class="text-slate-800"></span></span>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-service">Train
+                            <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-service-desktop">Train
                                 Service</label>
-                            <select id="service-type" onchange="app.updateRouteSegment()"
-                                class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                            <select id="service-type-desktop" onchange="app.updateRouteSegment()"
+                                class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-3 mb-4">
+                        <div class="grid grid-cols-2 gap-3 mb-4">
                             <div>
                                 <label class="text-xs font-bold text-slate-500 block mb-1"
-                                    id="lbl-depart">Depart</label>
-                                <select id="station-start" onchange="app.updateRouteSegment()"
-                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                                    id="lbl-depart-desktop">Depart</label>
+                                <select id="station-start-desktop" onchange="app.updateRouteSegment()"
+                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-slate-500 block mb-1"
-                                    id="lbl-arrive">Arrive</label>
-                                <select id="station-end" onchange="app.updateRouteSegment()"
-                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                                    id="lbl-arrive-desktop">Arrive</label>
+                                <select id="station-end-desktop" onchange="app.updateRouteSegment()"
+                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
                             </div>
                         </div>
 
                         <div class="flex justify-between items-center mb-4 px-1">
-                            <div class="text-xs text-slate-500" id="lbl-est-time">Estimated Time</div>
-                            <div id="segment-time" class="font-mono font-bold text-lg text-teal-600">-- min</div>
+                            <div class="text-xs text-slate-500" id="lbl-est-time-desktop">Estimated Time</div>
+                            <div id="segment-time-desktop" class="font-mono font-bold text-lg text-teal-600">-- min</div>
                         </div>
 
                         <button onclick="app.confirmRoute()"
-                            class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2 touch-target sticky bottom-0">
-                            <span id="btn-board">Board Train</span>
+                            class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2">
+                            <span id="btn-board-desktop">Board Train</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                     </div>
                 </div>
 
                 <!-- Seat Selection -->
-                <div id="view-seat"
-                    class="flex flex-col h-full p-6 absolute inset-0 bg-white translate-x-full transition-transform duration-300">
-                    <div class="flex items-center mb-2">
-                        <button onclick="app.goBackToRoutes()" class="mr-4 text-slate-400 hover:text-slate-600"><i
-                                class="fa-solid fa-arrow-left"></i></button>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
+                <div id="view-seat-desktop" class="view seat-view hidden flex flex-col h-full p-6 bg-white">
+                    <div class="flex items-center mb-4">
+                        <button onclick="app.goBackToRoutes()" class="back-button mr-4">
+                            <i class="fa-solid fa-arrow-left"></i>
+                            <span id="lbl-back-to-routes-desktop">Back to Routes</span>
+                        </button>
+                        <h2 class="text-2xl font-bold text-slate-800" id="lbl-select-seat-desktop">Select Seat</h2>
                     </div>
-                    <div class="flex gap-1 md:gap-2 overflow-x-auto pb-2 mb-2 p-2 md:p-0" id="car-list-container"></div>
-                    <p class="text-slate-500 text-sm mb-2" id="lbl-car-info">Car 1 - Ordinary</p>
+                    <div class="flex gap-2 overflow-x-auto pb-2 mb-4" id="car-list-container-desktop"></div>
+                    <p class="text-slate-500 text-sm mb-4" id="lbl-car-info-desktop">Car 1 - Ordinary</p>
                     <div class="flex-1 flex flex-col overflow-hidden">
                         <div
                             class="flex-1 flex justify-center items-start bg-slate-50 rounded-lg border border-slate-200 p-4 overflow-y-auto">
-                            <div id="seat-grid" class="grid gap-y-3"></div>
+                            <div id="seat-grid-desktop" class="grid gap-y-3"></div>
                         </div>
                         <div class="mt-4">
                             <div class="flex justify-between text-xs text-slate-400 mb-3">
                                 <span class="flex items-center">
                                     <div class="w-3 h-3 bg-white border border-slate-300 rounded mr-2"></div> <span
-                                        id="lbl-avail">Avail</span>
+                                        id="lbl-avail-desktop">Avail</span>
                                 </span>
                                 <span class="flex items-center">
-                                    <div class="w-3 h-3 bg-teal-500 rounded mr-2"></div> <span id="lbl-you">You</span>
+                                    <div class="w-3 h-3 bg-teal-500 rounded mr-2"></div> <span id="lbl-you-desktop">You</span>
                                 </span>
                                 <span class="flex items-center">
                                     <div class="w-3 h-3 bg-slate-300 opacity-50 rounded mr-2"></div> <span
-                                        id="lbl-taken">Taken</span>
+                                        id="lbl-taken-desktop">Taken</span>
                                 </span>
                             </div>
-                            <button id="confirm-seat-btn" disabled onclick="app.startFocus()"
-                                class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition touch-target">
-                                <span id="btn-start-focus">Start Focus</span>
+                            <button id="confirm-seat-btn-desktop" disabled onclick="app.startFocus()"
+                                class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                <span id="btn-start-focus-desktop">Start Focus</span>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <!-- Focus Mode -->
-                <div id="view-focus"
-                    class="flex flex-col h-full p-6 absolute inset-0 bg-white translate-x-full transition-transform duration-300">
+                <div id="view-focus-desktop" class="view focus-view hidden flex flex-col h-full p-6 bg-white">
                     <div class="flex-1 flex flex-col items-center justify-center text-center">
                         <div class="text-teal-600 mb-4 animate-pulse">
                             <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
                         </div>
-                        <h3 class="text-slate-500 uppercase tracking-widest text-xs mb-2" id="lbl-next-station">Next
+                        <h3 class="text-slate-500 uppercase tracking-widest text-xs mb-2" id="lbl-next-station-desktop">Next
                             Station</h3>
-                        <h2 id="next-station-display" class="text-2xl font-bold mb-6 text-slate-800">--</h2>
+                        <h2 id="next-station-display-desktop" class="text-2xl font-bold mb-6 text-slate-800">--</h2>
                         <div
-                            class="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
+                            class="relative w-48 h-48 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
                             <div class="text-center">
-                                <div id="timer-display"
-                                    class="text-3xl md:text-4xl font-bold train-font text-slate-800">00:00</div>
-                                <div class="text-xs text-slate-400 mt-1" id="lbl-remaining">Remaining</div>
+                                <div id="timer-display-desktop"
+                                    class="text-4xl font-bold train-font text-slate-800">00:00</div>
+                                <div class="text-xs text-slate-400 mt-1" id="lbl-remaining-desktop">Remaining</div>
                             </div>
                         </div>
                         <div class="w-full bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
-                            <div id="progress-bar"
+                            <div id="progress-bar-desktop"
                                 class="bg-teal-500 h-2 rounded-full transition-all duration-75 ease-linear"
                                 style="width: 0%"></div>
                         </div>
-                        <div class="flex justify-between w-full text-xs text-slate-400 font-mono px-4 md:px-0">
-                            <span id="distance-traveled">0 km</span>
-                            <span id="distance-total">100 km</span>
+                        <div class="flex justify-between w-full text-xs text-slate-400 font-mono">
+                            <span id="distance-traveled-desktop">0 km</span>
+                            <span id="distance-total-desktop">100 km</span>
                         </div>
-                        <div class="text-xs text-red-500 text-center mt-2 mb-4" id="lbl-stay-focused">
+                        <div class="text-xs text-red-500 text-center mt-2 mb-4" id="lbl-stay-focused-desktop">
                             ⚠️ Stay on this tab! Switching will end your focus session.
                         </div>
                     </div>
                     <button onclick="app.abandonTrip()" 
-                        class="mobile-button mt-4 text-red-400 hover:text-red-600 text-sm underline bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-3 touch-target"
-                        id="btn-stop">Emergency Stop (Quit)</button>
+                        class="mt-4 text-red-400 hover:text-red-600 text-sm underline bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-3"
+                        id="btn-stop-desktop">Emergency Stop (Quit)</button>
                 </div>
+            </div>
+
+            <div class="desktop-map">
+                <div id="map-desktop" class="absolute inset-0"></div>
+                
+                <div class="desktop-overlay">
+                    <div class="text-xs font-bold text-slate-500 uppercase" id="lbl-current-loc-desktop">Current Location</div>
+                    <div id="current-loc-text-desktop" class="text-sm font-mono">Select a route...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Layout -->
+    <div class="mobile-layout mobile-only">
+        <header class="bg-slate-900 text-white h-14 flex items-center justify-between px-4 shadow-md z-50">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
+                <h1 class="font-bold text-base tracking-wide" id="app-title-mobile">RAIL FOCUS</h1>
+            </div>
+            <div class="flex items-center gap-2">
+                <select id="lang-select-mobile" onchange="app.setLanguage(this.value)"
+                    class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 focus:outline-none focus:border-teal-500 mobile-select">
+                    <option value="en">English</option>
+                    <option value="tc">繁體中文</option>
+                    <option value="ja">日本語</option>
+                </select>
+                <button onclick="app.toggleHistory()" 
+                    class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span class="hidden sm:inline ml-1" id="nav-history-mobile">Travel Log</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="mobile-main">
+            <div id="map-mobile" class="mobile-map"></div>
+            
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg z-40 pointer-events-none">
+                <div class="text-xs font-bold text-slate-500 uppercase" id="lbl-current-loc-mobile">Current Location</div>
+                <div id="current-loc-text-mobile" class="text-sm font-mono">Select a route...</div>
             </div>
         </div>
 
-        <div id="history-modal"
-            class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 md:p-6 backdrop-blur-sm items-end md:items-center">
-            <div class="bg-white rounded-t-2xl md:rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[70vh] md:max-h-[80vh]">
-                <div class="p-4 border-b border-slate-100 flex justify-between items-center">
-                    <h3 class="font-bold text-lg" id="lbl-travel-log">Travel Log</h3>
-                    <button onclick="app.toggleHistory()" class="text-slate-400 hover:text-slate-600"><i
-                            class="fa-solid fa-xmark"></i></button>
-                </div>
-                <div id="history-list" class="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-1"></div>
-            </div>
-        </div>
+        <div id="mobile-controls" class="mobile-controls">
+            <div class="drag-handle"></div>
+            
+            <!-- Route Selection -->
+            <div id="view-route-mobile" class="view route-view flex flex-col h-full p-6 bg-white">
+                <h2 class="text-xl font-bold mb-1 text-slate-800" id="lbl-select-route-mobile">Select Route</h2>
+                <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc-mobile">Choose your line and stations.</p>
 
-        <div id="door-overlay"
-            class="fixed inset-0 z-[9999] md:z-[200] pointer-events-none hidden flex items-center justify-center">
-            <div id="door-left"
-                class="w-1/2 h-full bg-slate-100 border-r border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-end items-center">
-                <div class="shinkansen-door-window mr-4 md:mr-8">
-                    <div class="door-glass-reflection"></div>
-                </div>
-                <div class="door-warning-sticker mr-4 md:mr-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-20" id="route-list-mobile"></div>
+
+                <div id="route-confirm-container-mobile"
+                    class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl h-full overflow-y-auto">
+                    <div class="flex justify-between items-center mb-2">
+                        <button onclick="app.cancelRouteSelection()"
+                            class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition touch-target">
+                            <i class="fa-solid fa-chevron-down mr-1"></i> <span class="text-xs font-bold"
+                                id="lbl-back-route-mobile">Back</span>
+                        </button>
+                    </div>
+
+                    <div id="selected-train-display-mobile" class="hidden">
+                        <img id="train-hero-img-mobile" src="" class="train-hero" alt="Train Model">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">Model:
+                                <span id="train-model-name-mobile" class="text-slate-800"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-service-mobile">Train
+                            Service</label>
+                        <select id="service-type-mobile" onchange="app.updateRouteSegment()"
+                            class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 block mb-1"
+                                id="lbl-depart-mobile">Depart</label>
+                            <select id="station-start-mobile" onchange="app.updateRouteSegment()"
+                                class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-slate-500 block mb-1"
+                                id="lbl-arrive-mobile">Arrive</label>
+                            <select id="station-end-mobile" onchange="app.updateRouteSegment()"
+                                class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-4 px-1">
+                        <div class="text-xs text-slate-500" id="lbl-est-time-mobile">Estimated Time</div>
+                        <div id="segment-time-mobile" class="font-mono font-bold text-lg text-teal-600">-- min</div>
+                    </div>
+
+                    <button onclick="app.confirmRoute()"
+                        class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2 touch-target sticky bottom-0">
+                        <span id="btn-board-mobile">Board Train</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
                 </div>
             </div>
-            <div id="door-right"
-                class="w-1/2 h-full bg-slate-100 border-l border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-start items-center">
-                <div class="shinkansen-door-window ml-4 md:ml-8">
-                    <div class="door-glass-reflection"></div>
+
+            <!-- Seat Selection -->
+            <div id="view-seat-mobile" class="view seat-view hidden flex flex-col h-full p-6 bg-white">
+                <div class="flex items-center mb-2">
+                    <button onclick="app.goBackToRoutes()" class="back-button mr-4">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span id="lbl-back-to-routes-mobile">Back to Routes</span>
+                    </button>
+                    <h2 class="text-xl font-bold text-slate-800" id="lbl-select-seat-mobile">Select Seat</h2>
                 </div>
-                <div class="door-warning-sticker ml-4 md:ml-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                <div class="flex gap-1 overflow-x-auto pb-2 mb-2 p-2" id="car-list-container-mobile"></div>
+                <p class="text-slate-500 text-sm mb-2" id="lbl-car-info-mobile">Car 1 - Ordinary</p>
+                <div class="flex-1 flex flex-col overflow-hidden">
+                    <div
+                        class="flex-1 flex justify-center items-start bg-slate-50 rounded-lg border border-slate-200 p-4 overflow-y-auto">
+                        <div id="seat-grid-mobile" class="grid gap-y-3"></div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex justify-between text-xs text-slate-400 mb-3">
+                            <span class="flex items-center">
+                                <div class="w-3 h-3 bg-white border border-slate-300 rounded mr-2"></div> <span
+                                    id="lbl-avail-mobile">Avail</span>
+                            </span>
+                            <span class="flex items-center">
+                                <div class="w-3 h-3 bg-teal-500 rounded mr-2"></div> <span id="lbl-you-mobile">You</span>
+                            </span>
+                            <span class="flex items-center">
+                                <div class="w-3 h-3 bg-slate-300 opacity-50 rounded mr-2"></div> <span
+                                    id="lbl-taken-mobile">Taken</span>
+                            </span>
+                        </div>
+                        <button id="confirm-seat-btn-mobile" disabled onclick="app.startFocus()"
+                            class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition touch-target">
+                            <span id="btn-start-focus-mobile">Start Focus</span>
+                        </button>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Focus Mode -->
+            <div id="view-focus-mobile" class="view focus-view hidden flex flex-col h-full p-6 bg-white">
+                <div class="flex-1 flex flex-col items-center justify-center text-center">
+                    <div class="text-teal-600 mb-4 animate-pulse">
+                        <i class="fa-solid fa-circle-notch fa-spin text-3xl"></i>
+                    </div>
+                    <h3 class="text-slate-500 uppercase tracking-widest text-xs mb-2" id="lbl-next-station-mobile">Next
+                        Station</h3>
+                    <h2 id="next-station-display-mobile" class="text-2xl font-bold mb-6 text-slate-800">--</h2>
+                    <div
+                        class="relative w-40 h-40 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
+                        <div class="text-center">
+                            <div id="timer-display-mobile"
+                                class="text-3xl font-bold train-font text-slate-800">00:00</div>
+                            <div class="text-xs text-slate-400 mt-1" id="lbl-remaining-mobile">Remaining</div>
+                        </div>
+                    </div>
+                    <div class="w-full bg-slate-100 rounded-full h-2 mb-2 overflow-hidden">
+                        <div id="progress-bar-mobile"
+                            class="bg-teal-500 h-2 rounded-full transition-all duration-75 ease-linear"
+                            style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between w-full text-xs text-slate-400 font-mono px-4">
+                        <span id="distance-traveled-mobile">0 km</span>
+                        <span id="distance-total-mobile">100 km</span>
+                    </div>
+                    <div class="text-xs text-red-500 text-center mt-2 mb-4" id="lbl-stay-focused-mobile">
+                        ⚠️ Stay on this tab! Switching will end your focus session.
+                    </div>
+                </div>
+                <button onclick="app.abandonTrip()" 
+                    class="mobile-button mt-4 text-red-400 hover:text-red-600 text-sm underline bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-3 touch-target"
+                    id="btn-stop-mobile">Emergency Stop (Quit)</button>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Common Elements (History Modal, Door Overlay) -->
+    <div id="history-modal"
+        class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-4 md:p-6 backdrop-blur-sm items-end md:items-center">
+        <div class="bg-white rounded-t-2xl md:rounded-lg shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[70vh] md:max-h-[80vh]">
+            <div class="p-4 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-bold text-lg" id="lbl-travel-log">Travel Log</h3>
+                <button onclick="app.toggleHistory()" class="text-slate-400 hover:text-slate-600"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="history-list" class="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-1"></div>
+        </div>
+    </div>
+
+    <div id="door-overlay"
+        class="fixed inset-0 z-[9999] md:z-[200] pointer-events-none hidden flex items-center justify-center">
+        <div id="door-left"
+            class="w-1/2 h-full bg-slate-100 border-r border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-end items-center">
+            <div class="shinkansen-door-window mr-4 md:mr-8">
+                <div class="door-glass-reflection"></div>
+            </div>
+            <div class="door-warning-sticker mr-4 md:mr-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+            </div>
+        </div>
+        <div id="door-right"
+            class="w-1/2 h-full bg-slate-100 border-l border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-start items-center">
+            <div class="shinkansen-door-window ml-4 md:ml-8">
+                <div class="door-glass-reflection"></div>
+            </div>
+            <div class="door-warning-sticker ml-4 md:ml-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+            </div>
+        </div>
+    </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
@@ -931,7 +1130,8 @@
                 travelLog: "Travel Log", catGrand: "Grand Tour (Through Routes)", catWest: "West Japan (Tokaido/Sanyo/Kyushu)",
                 catEast: "East Japan (Tohoku/Akita/Yamagata)", catNorth: "Hokkaido", catCentral: "Central Japan (Hokuriku/Joetsu)",
                 backRoute: "Back to Routes", arrived: "Arrived! Journey Complete.", confirmStop: "Stop Focus Session?",
-                ord: "Ord", grn: "Grn", res: "Res", unres: "Unres", next: "Next: ", stayFocusedWarning: "⚠️ Stay on this tab! Switching will end your focus session."
+                ord: "Ord", grn: "Grn", res: "Res", unres: "Unres", next: "Next: ", stayFocusedWarning: "⚠️ Stay on this tab! Switching will end your focus session.",
+                backToRoutes: "Back to Routes"
             },
             tc: {
                 appTitle: "鐵路專注", navHistory: "乘車記錄", currentLoc: "目前位置",
@@ -943,7 +1143,8 @@
                 travelLog: "乘車記錄", catGrand: "日本縱貫 (直通運轉)", catWest: "西日本 (東海道/山陽/九州)",
                 catEast: "東日本 (東北/秋田/山形)", catNorth: "北海道", catCentral: "中日本 (北陸/上越)",
                 backRoute: "返回路線列表", arrived: "已抵達！旅程結束。", confirmStop: "停止專注？",
-                ord: "普通", grn: "綠色", res: "指定", unres: "自由", next: "下一站: ", stayFocusedWarning: "⚠️ 留在這個分頁！切換分頁會結束你的專注時段。"
+                ord: "普通", grn: "綠色", res: "指定", unres: "自由", next: "下一站: ", stayFocusedWarning: "⚠️ 留在這個分頁！切換分頁會結束你的專注時段。",
+                backToRoutes: "返回路線"
             },
             ja: {
                 appTitle: "レイルフォーカス", navHistory: "乗車履歴", currentLoc: "現在地",
@@ -955,7 +1156,8 @@
                 travelLog: "乗車履歴", catGrand: "日本縦断 (直通運転)", catWest: "西日本 (東海道・山陽・九州)",
                 catEast: "東日本 (東北・秋田・山形)", catNorth: "北海道", catCentral: "中日本 (北陸・上越)",
                 backRoute: "路線一覧に戻る", arrived: "到着しました！お疲れ様でした。", confirmStop: "集中モードを終了しますか？",
-                ord: "普通", grn: "Ｇ車", res: "指定", unres: "自由", next: "次は ", stayFocusedWarning: "⚠️ このタブに留まってください！タブを切り替えると集中セッションが終了します。"
+                ord: "普通", grn: "Ｇ車", res: "指定", unres: "自由", next: "次は ", stayFocusedWarning: "⚠️ このタブに留まってください！タブを切り替えると集中セッションが終了します。",
+                backToRoutes: "路線に戻る"
             }
         };
 
@@ -1070,7 +1272,8 @@
                     activeStations: [],
                     animationFrameId: null,
                     isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'
+                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
+                    currentView: 'route'
                 };
                 this.map = null;
                 this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
@@ -1170,7 +1373,10 @@
             }
 
             adjustFocusModeLayout() {
-                const focusView = document.getElementById('view-focus');
+                const focusView = this.state.isMobile ? 
+                    document.getElementById('view-focus-mobile') : 
+                    document.getElementById('view-focus-desktop');
+                    
                 if (!focusView) return;
 
                 const isPortrait = this.state.orientation === 'portrait';
@@ -1184,7 +1390,9 @@
                     }
                     
                     // Adjust timer font size
-                    const timerDisplay = document.getElementById('timer-display');
+                    const timerDisplay = this.state.isMobile ? 
+                        document.getElementById('timer-display-mobile') :
+                        document.getElementById('timer-display-desktop');
                     if (timerDisplay) {
                         timerDisplay.style.fontSize = '2rem';
                     }
@@ -1195,7 +1403,9 @@
                         progressCircle.style.height = '192px';
                     }
                     
-                    const timerDisplay = document.getElementById('timer-display');
+                    const timerDisplay = this.state.isMobile ? 
+                        document.getElementById('timer-display-mobile') :
+                        document.getElementById('timer-display-desktop');
                     if (timerDisplay) {
                         timerDisplay.style.fontSize = '2.5rem';
                     }
@@ -1209,7 +1419,8 @@
                 }
 
                 // Remove previous selection
-                document.querySelectorAll('.seat').forEach(seat => {
+                const seatSelector = this.state.isMobile ? '.seat' : '.seat-desktop';
+                document.querySelectorAll(seatSelector).forEach(seat => {
                     if (!seat.classList.contains('taken')) {
                         seat.classList.remove('bg-teal-500', 'text-white', 'border-teal-500');
                         seat.classList.add('bg-white', 'text-slate-600');
@@ -1222,7 +1433,11 @@
                 this.hapticFeedback.medium();
 
                 this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
-                document.getElementById('confirm-seat-btn').disabled = false;
+                
+                const confirmBtn = this.state.isMobile ? 
+                    document.getElementById('confirm-seat-btn-mobile') :
+                    document.getElementById('confirm-seat-btn-desktop');
+                confirmBtn.disabled = false;
                 
                 // Add visual confirmation for mobile
                 if (this.state.isMobile) {
@@ -1405,8 +1620,21 @@
                 const southWest = L.latLng(20.0, 120.0);
                 const northEast = L.latLng(50.0, 160.0);
                 const bounds = L.latLngBounds(southWest, northEast);
-                this.map = L.map('map', { zoomControl: false, maxBounds: bounds, maxBoundsViscosity: 1.0, minZoom: 5 }).setView([36.2048, 138.2529], 6);
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; OSM, &copy; CartoDB', maxZoom: 19, bounds: bounds }).addTo(this.map);
+                
+                // Initialize the appropriate map based on device
+                const mapElement = this.state.isMobile ? 'map-mobile' : 'map-desktop';
+                this.map = L.map(mapElement, { 
+                    zoomControl: false, 
+                    maxBounds: bounds, 
+                    maxBoundsViscosity: 1.0, 
+                    minZoom: 5 
+                }).setView([36.2048, 138.2529], 6);
+                
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { 
+                    attribution: '&copy; OSM, &copy; CartoDB', 
+                    maxZoom: 19, 
+                    bounds: bounds 
+                }).addTo(this.map);
             }
 
             createTrainIcon(url) {
@@ -1418,7 +1646,10 @@
             }
 
             renderRoutes() {
-                const container = document.getElementById('route-list');
+                const container = this.state.isMobile ? 
+                    document.getElementById('route-list-mobile') : 
+                    document.getElementById('route-list-desktop');
+                    
                 const lang = this.state.language;
                 const texts = TRANSLATIONS[lang];
                 const categories = { [texts.catWest]: ['tokaido', 'sanyo', 'kyushu', 'nishi_kyushu', 'tokyo_kagoshima', 'tokyo_hakata'], [texts.catEast]: ['tohoku', 'tokyo_hakodate', 'akita', 'tokyo_akita', 'yamagata', 'hokuriku', 'joetsu'], [texts.catNorth]: ['hokkaido'] };
@@ -1431,62 +1662,164 @@
                 }
                 container.innerHTML = html;
             }
-            toggleCategory(header) { const content = header.nextElementSibling; const icon = header.querySelector('i'); if (content.classList.contains('hidden')) { content.classList.remove('hidden'); icon.style.transform = 'rotate(0deg)'; } else { content.classList.add('hidden'); icon.style.transform = 'rotate(-90deg)'; } }
+            
+            toggleCategory(header) { 
+                const content = header.nextElementSibling; 
+                const icon = header.querySelector('i'); 
+                if (content.classList.contains('hidden')) { 
+                    content.classList.remove('hidden'); 
+                    icon.style.transform = 'rotate(0deg)'; 
+                } else { 
+                    content.classList.add('hidden'); 
+                    icon.style.transform = 'rotate(-90deg)'; 
+                } 
+            }
+            
             renderSelectors(route) {
                 const lang = this.state.language;
-                const startSel = document.getElementById('station-start'); const endSel = document.getElementById('station-end'); const serviceSel = document.getElementById('service-type');
-                const prevStart = startSel.value; const prevEnd = endSel.value;
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                
+                const startSel = document.getElementById(`station-start${prefix}`);
+                const endSel = document.getElementById(`station-end${prefix}`);
+                const serviceSel = document.getElementById(`service-type${prefix}`);
+                
+                const prevStart = startSel.value; 
+                const prevEnd = endSel.value;
+                
                 startSel.innerHTML = route.stations.map((s, i) => `<option value="${i}">${s.names[lang]}</option>`).join('');
                 endSel.innerHTML = route.stations.map((s, i) => `<option value="${i}" ${i === route.stations.length - 1 ? 'selected' : ''}>${s.names[lang]}</option>`).join('');
                 serviceSel.innerHTML = (route.services || []).map(s => `<option value="${s.multiplier}">${s.names[lang]}</option>`).join('');
+                
                 startSel.value = (prevStart && prevStart < route.stations.length) ? prevStart : 0;
                 endSel.value = (prevEnd && prevEnd < route.stations.length) ? prevEnd : route.stations.length - 1;
             }
+            
             previewRoute(routeId, el) {
-                document.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                const routeList = document.getElementById(`route-list${prefix}`);
+                
+                routeList.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
                 el.classList.add('selected');
+                
                 const route = ROUTES.find(r => r.id === routeId);
                 this.state.baseRoute = route;
-                if (route.trainModel) { document.getElementById('train-hero-img').src = route.trainModel.image; document.getElementById('train-model-name').innerText = route.trainModel.name; document.getElementById('selected-train-display').classList.remove('hidden'); } else { document.getElementById('selected-train-display').classList.add('hidden'); }
+                
+                if (route.trainModel) { 
+                    document.getElementById(`train-hero-img${prefix}`).src = route.trainModel.image; 
+                    document.getElementById(`train-model-name${prefix}`).innerText = route.trainModel.name; 
+                    document.getElementById(`selected-train-display${prefix}`).classList.remove('hidden'); 
+                } else { 
+                    document.getElementById(`selected-train-display${prefix}`).classList.add('hidden'); 
+                }
+                
                 this.renderSelectors(route);
-                document.getElementById('route-confirm-container').classList.remove('translate-y-full');
-                this.updateRouteSegment();
-                setTimeout(() => {
-                    const container = document.getElementById('route-confirm-container');
-                    if (window.innerWidth < 768) {
+                
+                if (this.state.isMobile) {
+                    document.getElementById('route-confirm-container-mobile').classList.remove('translate-y-full');
+                    setTimeout(() => {
+                        const container = document.getElementById('route-confirm-container-mobile');
                         container.scrollTop = container.scrollHeight;
-                    }
-                }, 300);
+                    }, 300);
+                }
+                
+                this.updateRouteSegment();
             }
+            
             cancelRouteSelection() {
-                document.getElementById('route-confirm-container').classList.add('translate-y-full');
-                document.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
+                if (this.state.isMobile) {
+                    document.getElementById('route-confirm-container-mobile').classList.add('translate-y-full');
+                }
+                
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                const routeList = document.getElementById(`route-list${prefix}`);
+                
+                routeList.querySelectorAll('.route-card').forEach(card => card.classList.remove('selected', 'border-teal-500'));
+                
                 if (this.routeLayers.border) this.map.removeLayer(this.routeLayers.border);
                 if (this.routeLayers.main) this.map.removeLayer(this.routeLayers.main);
                 if (this.routeLayers.dashed) this.map.removeLayer(this.routeLayers.dashed);
                 if (this.routeLayers.marker) this.map.removeLayer(this.routeLayers.marker);
                 if (this.routeLayers.startMarker) this.map.removeLayer(this.routeLayers.startMarker);
                 if (this.routeLayers.endMarker) this.map.removeLayer(this.routeLayers.endMarker);
-                this.state.baseRoute = null; this.state.segmentPath = null;
-                document.getElementById('current-loc-text').innerText = TRANSLATIONS[this.state.language].selectRouteDesc;
+                
+                this.state.baseRoute = null; 
+                this.state.segmentPath = null;
+                
+                const currentLocText = document.getElementById(this.state.isMobile ? 'current-loc-text-mobile' : 'current-loc-text-desktop');
+                currentLocText.innerText = TRANSLATIONS[this.state.language].selectRouteDesc;
             }
 
             setLanguage(lang) {
                 this.state.language = lang;
-                document.getElementById('lang-select').value = lang;
+                
+                // Update both mobile and desktop language selectors
+                document.getElementById('lang-select-desktop').value = lang;
+                document.getElementById('lang-select-mobile').value = lang;
+                
                 const texts = TRANSLATIONS[lang];
-                document.getElementById('app-title').innerText = texts.appTitle; document.getElementById('nav-history').innerText = texts.navHistory; document.getElementById('lbl-current-loc').innerText = texts.currentLoc; document.getElementById('lbl-select-route').innerText = texts.selectRoute; document.getElementById('lbl-select-route-desc').innerText = texts.selectRouteDesc; document.getElementById('lbl-service').innerText = texts.service; document.getElementById('lbl-depart').innerText = texts.depart; document.getElementById('lbl-arrive').innerText = texts.arrive; document.getElementById('lbl-est-time').innerText = texts.estTime; document.getElementById('btn-board').innerText = texts.board; document.getElementById('lbl-select-seat').innerText = texts.selectSeat; this.updateCarInfoLabel(); document.getElementById('lbl-avail').innerText = texts.avail; document.getElementById('lbl-you').innerText = texts.you; document.getElementById('lbl-taken').innerText = texts.taken; document.getElementById('btn-start-focus').innerText = texts.startFocus; document.getElementById('lbl-next-station').innerText = texts.nextStation; document.getElementById('lbl-remaining').innerText = texts.remaining; document.getElementById('btn-stop').innerText = texts.stop; document.getElementById('lbl-travel-log').innerText = texts.travelLog; document.getElementById('lbl-back-route').innerText = texts.backRoute; document.getElementById('lbl-stay-focused').innerText = texts.stayFocusedWarning;
+                
+                // Update desktop texts
+                document.getElementById('app-title').innerText = texts.appTitle; 
+                document.getElementById('nav-history-desktop').innerText = texts.navHistory; 
+                document.getElementById('lbl-current-loc-desktop').innerText = texts.currentLoc; 
+                document.getElementById('lbl-select-route-desktop').innerText = texts.selectRoute; 
+                document.getElementById('lbl-select-route-desc-desktop').innerText = texts.selectRouteDesc; 
+                document.getElementById('lbl-service-desktop').innerText = texts.service; 
+                document.getElementById('lbl-depart-desktop').innerText = texts.depart; 
+                document.getElementById('lbl-arrive-desktop').innerText = texts.arrive; 
+                document.getElementById('lbl-est-time-desktop').innerText = texts.estTime; 
+                document.getElementById('btn-board-desktop').innerText = texts.board; 
+                document.getElementById('lbl-select-seat-desktop').innerText = texts.selectSeat; 
+                this.updateCarInfoLabel(); 
+                document.getElementById('lbl-avail-desktop').innerText = texts.avail; 
+                document.getElementById('lbl-you-desktop').innerText = texts.you; 
+                document.getElementById('lbl-taken-desktop').innerText = texts.taken; 
+                document.getElementById('btn-start-focus-desktop').innerText = texts.startFocus; 
+                document.getElementById('lbl-next-station-desktop').innerText = texts.nextStation; 
+                document.getElementById('lbl-remaining-desktop').innerText = texts.remaining; 
+                document.getElementById('btn-stop-desktop').innerText = texts.stop; 
+                document.getElementById('lbl-travel-log').innerText = texts.travelLog; 
+                document.getElementById('lbl-back-route-mobile').innerText = texts.backRoute; 
+                document.getElementById('lbl-stay-focused-desktop').innerText = texts.stayFocusedWarning;
+                document.getElementById('lbl-back-to-routes-desktop').innerText = texts.backToRoutes;
+                
+                // Update mobile texts
+                document.getElementById('app-title-mobile').innerText = texts.appTitle; 
+                document.getElementById('nav-history-mobile').innerText = texts.navHistory; 
+                document.getElementById('lbl-current-loc-mobile').innerText = texts.currentLoc; 
+                document.getElementById('lbl-select-route-mobile').innerText = texts.selectRoute; 
+                document.getElementById('lbl-select-route-desc-mobile').innerText = texts.selectRouteDesc; 
+                document.getElementById('lbl-service-mobile').innerText = texts.service; 
+                document.getElementById('lbl-depart-mobile').innerText = texts.depart; 
+                document.getElementById('lbl-arrive-mobile').innerText = texts.arrive; 
+                document.getElementById('lbl-est-time-mobile').innerText = texts.estTime; 
+                document.getElementById('btn-board-mobile').innerText = texts.board; 
+                document.getElementById('lbl-select-seat-mobile').innerText = texts.selectSeat; 
+                this.updateCarInfoLabel(); 
+                document.getElementById('lbl-avail-mobile').innerText = texts.avail; 
+                document.getElementById('lbl-you-mobile').innerText = texts.you; 
+                document.getElementById('lbl-taken-mobile').innerText = texts.taken; 
+                document.getElementById('btn-start-focus-mobile').innerText = texts.startFocus; 
+                document.getElementById('lbl-next-station-mobile').innerText = texts.nextStation; 
+                document.getElementById('lbl-remaining-mobile').innerText = texts.remaining; 
+                document.getElementById('btn-stop-mobile').innerText = texts.stop; 
+                document.getElementById('lbl-stay-focused-mobile').innerText = texts.stayFocusedWarning;
+                document.getElementById('lbl-back-to-routes-mobile').innerText = texts.backToRoutes;
+                
                 this.renderRoutes();
                 if (this.state.baseRoute) this.renderSelectors(this.state.baseRoute);
                 if (this.state.isFocusing) this.updateFocusText(0);
-                if (!document.getElementById('view-seat').classList.contains('translate-x-full')) this.renderCarSelector();
+                if (this.state.currentView === 'seat') this.renderCarSelector();
             }
 
             updateRouteSegment() {
                 if (!this.state.baseRoute) return;
-                const startIdx = parseInt(document.getElementById('station-start').value);
-                const endIdx = parseInt(document.getElementById('station-end').value);
-                this.state.speedMultiplier = parseFloat(document.getElementById('service-type').value);
+                
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                
+                const startIdx = parseInt(document.getElementById(`station-start${prefix}`).value);
+                const endIdx = parseInt(document.getElementById(`station-end${prefix}`).value);
+                this.state.speedMultiplier = parseFloat(document.getElementById(`service-type${prefix}`).value);
 
                 if (isNaN(startIdx) || isNaN(endIdx) || endIdx <= startIdx) return;
 
@@ -1506,7 +1839,7 @@
                 const baseSegmentDuration = this.state.baseRoute.durationMinutes * ratio;
                 this.state.segmentDuration = Math.max(1, Math.round(baseSegmentDuration * this.state.speedMultiplier));
 
-                document.getElementById('segment-time').innerText = `${this.state.segmentDuration} min`;
+                document.getElementById(`segment-time${prefix}`).innerText = `${this.state.segmentDuration} min`;
             }
 
             drawMap(multiPath, startCoord, endCoord) {
@@ -1528,7 +1861,7 @@
                     this.routeLayers.endMarker = L.circleMarker(endCoord, { color: '#ef4444', fillColor: '#ef4444', fillOpacity: 0.9, radius: 6 }).addTo(this.map).bindTooltip("Arrive", { permanent: true, direction: 'top', className: 'station-label' });
                 }
 
-                const isMobile = window.innerWidth < 768;
+                const isMobile = this.state.isMobile;
                 if (this.routeLayers.border.getBounds().isValid()) {
                     this.map.flyToBounds(this.routeLayers.border.getBounds(), {
                         paddingBottomRight: isMobile ? [0, window.innerHeight / 2] : [0, 0],
@@ -1540,32 +1873,71 @@
 
             confirmRoute() {
                 if (!this.state.segmentPath) return;
-                document.getElementById('view-route').classList.add('-translate-x-full');
-                document.getElementById('view-seat').classList.remove('translate-x-full');
-                this.state.currentCar = 4; this.renderCarSelector(); this.renderSeats();
+                
+                this.state.currentView = 'seat';
+                
+                if (this.state.isMobile) {
+                    document.getElementById('view-route-mobile').classList.add('hidden');
+                    document.getElementById('view-seat-mobile').classList.remove('hidden');
+                } else {
+                    document.getElementById('view-route-desktop').classList.add('hidden');
+                    document.getElementById('view-seat-desktop').classList.remove('hidden');
+                }
+                
+                this.state.currentCar = 4; 
+                this.renderCarSelector(); 
+                this.renderSeats();
             }
+            
             goBackToRoutes() {
-                document.getElementById('view-route').classList.remove('-translate-x-full');
-                document.getElementById('view-seat').classList.add('translate-x-full');
+                this.state.currentView = 'route';
+                
+                if (this.state.isMobile) {
+                    document.getElementById('view-route-mobile').classList.remove('hidden');
+                    document.getElementById('view-seat-mobile').classList.add('hidden');
+                } else {
+                    document.getElementById('view-route-desktop').classList.remove('hidden');
+                    document.getElementById('view-seat-desktop').classList.add('hidden');
+                }
             }
-            selectCar(carNum) { this.state.currentCar = carNum; this.renderCarSelector(); this.renderSeats(); this.updateCarInfoLabel(); }
+            
+            selectCar(carNum) { 
+                this.state.currentCar = carNum; 
+                this.renderCarSelector(); 
+                this.renderSeats(); 
+                this.updateCarInfoLabel(); 
+            }
+            
             updateCarInfoLabel() {
                 const texts = TRANSLATIONS[this.state.language];
                 let type = (this.state.currentCar <= 3) ? texts.unres : (this.state.currentCar === 8 ? texts.grn : texts.res);
-                document.getElementById('lbl-car-info').innerText = `${texts.carInfo} ${this.state.currentCar} - ${type}`;
+                
+                if (this.state.isMobile) {
+                    document.getElementById('lbl-car-info-mobile').innerText = `${texts.carInfo} ${this.state.currentCar} - ${type}`;
+                } else {
+                    document.getElementById('lbl-car-info-desktop').innerText = `${texts.carInfo} ${this.state.currentCar} - ${type}`;
+                }
             }
+            
             renderCarSelector() {
                 const cars = [1, 2, 3, 4, 5, 6, 7, 8];
                 const texts = TRANSLATIONS[this.state.language];
-                document.getElementById('car-list-container').innerHTML = cars.map(num => {
+                const container = this.state.isMobile ? 
+                    document.getElementById('car-list-container-mobile') : 
+                    document.getElementById('car-list-container-desktop');
+                    
+                container.innerHTML = cars.map(num => {
                     let type = (num <= 3) ? texts.unres : (num === 8 ? texts.grn : texts.res);
                     return `<div onclick="app.selectCar(${num})" class="car-tab ${num === this.state.currentCar ? 'active' : ''}"><span class="car-num">${num}</span><span class="car-type">${type}</span></div>`;
                 }).join('');
             }
+            
             renderSeats() {
-                const grid = document.getElementById('seat-grid');
+                const grid = this.state.isMobile ? 
+                    document.getElementById('seat-grid-mobile') : 
+                    document.getElementById('seat-grid-desktop');
+                    
                 const isGreen = (this.state.currentCar === 8);
-                const isMobile = this.state.isMobile;
                 
                 if (isGreen) {
                     grid.className = "grid grid-cols-5 gap-2 md:gap-3 p-4 md:p-2";
@@ -1598,6 +1970,7 @@
                     }).join('');
                 }
             }
+            
             selectSeat(seatNum, el) {
                 if (this.state.isMobile) {
                     this.mobileSeatSelect(seatNum, el);
@@ -1605,28 +1978,47 @@
                     // Desktop behavior
                     if (el.classList.contains('taken')) return;
                     document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
-                    el.classList.remove('bg-white', 'text-slate-600'); el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
+                    el.classList.remove('bg-white', 'text-slate-600'); 
+                    el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
                     this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
-                    document.getElementById('confirm-seat-btn').disabled = false;
+                    document.getElementById('confirm-seat-btn-desktop').disabled = false;
                 }
             }
+            
             startFocus() {
+                this.state.currentView = 'focus';
                 const overlay = document.getElementById('door-overlay');
-                const left = document.getElementById('door-left'); const right = document.getElementById('door-right');
-                left.classList.remove('-translate-x-full'); right.classList.remove('translate-x-full'); overlay.classList.remove('hidden');
-                document.getElementById('view-seat').classList.add('-translate-x-full'); document.getElementById('view-focus').classList.remove('translate-x-full');
+                const left = document.getElementById('door-left'); 
+                const right = document.getElementById('door-right');
+                
+                left.classList.remove('-translate-x-full'); 
+                right.classList.remove('translate-x-full'); 
+                overlay.classList.remove('hidden');
+                
+                if (this.state.isMobile) {
+                    document.getElementById('view-seat-mobile').classList.add('hidden');
+                } else {
+                    document.getElementById('view-seat-desktop').classList.add('hidden');
+                }
+                
                 setTimeout(() => {
-                    left.classList.add('-translate-x-full'); right.classList.add('translate-x-full');
-                    setTimeout(() => { overlay.classList.add('hidden'); this._startFocusSession(); }, 1500);
+                    left.classList.add('-translate-x-full'); 
+                    right.classList.add('translate-x-full');
+                    setTimeout(() => { 
+                        overlay.classList.add('hidden'); 
+                        this._startFocusSession(); 
+                    }, 1500);
                 }, 800);
             }
+            
             _startFocusSession() {
                 this.state.isFocusing = true;
                 this.state.startTime = Date.now();
                 this.state.durationSeconds = this.state.segmentDuration * 60;
 
-                const startIdx = parseInt(document.getElementById('station-start').value);
-                const endIdx = parseInt(document.getElementById('station-end').value);
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                const startIdx = parseInt(document.getElementById(`station-start${prefix}`).value);
+                const endIdx = parseInt(document.getElementById(`station-end${prefix}`).value);
                 const segmentStations = this.state.baseRoute.stations.slice(startIdx + 1, endIdx + 1);
 
                 this.state.activeStations = segmentStations.map(st => {
@@ -1641,16 +2033,25 @@
 
                 this.map.fitBounds(L.polyline(this.state.segmentPath).getBounds(), { padding: [50, 50] });
 
-                document.getElementById('distance-total').innerText = `${getPathLength(this.state.segmentPath).toFixed(1)} km`;
+                const distanceTotal = document.getElementById(this.state.isMobile ? 'distance-total-mobile' : 'distance-total-desktop');
+                distanceTotal.innerText = `${getPathLength(this.state.segmentPath).toFixed(1)} km`;
+                
                 this.updateFocusText(0);
+                
+                if (this.state.isMobile) {
+                    document.getElementById('view-focus-mobile').classList.remove('hidden');
+                } else {
+                    document.getElementById('view-focus-desktop').classList.remove('hidden');
+                }
+                
                 this.animateLoop();
                 document.addEventListener("visibilitychange", () => {
-                if (document.visibilityState === 'visible') {
-                    handleUserReturned();
-                } else {
-                    handleUserLeft();
-                }
-            });
+                    if (document.visibilityState === 'visible') {
+                        handleUserReturned();
+                    } else {
+                        handleUserLeft();
+                    }
+                });
             }
 
             findClosestPathIndex(path, coord) {
@@ -1665,8 +2066,10 @@
             updateFocusText(currentKm) {
                 const lang = this.state.language;
                 const nextStation = this.state.activeStations.find(st => st.dist > currentKm);
-                let label = nextStation ? nextStation.names[lang] : this.state.baseRoute.stations[document.getElementById('station-end').value].names[lang];
-                document.getElementById('next-station-display').innerText = label;
+                let label = nextStation ? nextStation.names[lang] : this.state.baseRoute.stations[document.getElementById(this.state.isMobile ? 'station-end-mobile' : 'station-end-desktop').value].names[lang];
+                
+                const nextStationDisplay = document.getElementById(this.state.isMobile ? 'next-station-display-mobile' : 'next-station-display-desktop');
+                nextStationDisplay.innerText = label;
             }
 
             animateLoop() {
@@ -1675,15 +2078,19 @@
                 const elapsed = (now - this.state.startTime) / 1000;
                 const progress = Math.min(elapsed / this.state.durationSeconds, 1);
                 const remaining = Math.max(0, this.state.durationSeconds - elapsed);
-                const mins = Math.floor(remaining / 60); const secs = Math.floor(remaining % 60);
-                document.getElementById('timer-display').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                const mins = Math.floor(remaining / 60); 
+                const secs = Math.floor(remaining % 60);
+                
+                const timerDisplay = document.getElementById(this.state.isMobile ? 'timer-display-mobile' : 'timer-display-desktop');
+                timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 
                 const totalDist = getPathLength(this.state.segmentPath);
                 const targetDist = totalDist * progress;
 
                 let currentDist = 0;
                 for (let i = 0; i < this.state.segmentPath.length - 1; i++) {
-                    const p1 = this.state.segmentPath[i]; const p2 = this.state.segmentPath[i + 1];
+                    const p1 = this.state.segmentPath[i]; 
+                    const p2 = this.state.segmentPath[i + 1];
                     const segDist = getDistanceFromLatLonInKm(p1[0], p1[1], p2[0], p2[1]);
                     if (currentDist + segDist >= targetDist) {
                         const ratio = (targetDist - currentDist) / segDist;
@@ -1698,34 +2105,70 @@
                 if (progress >= 1) this.routeLayers.marker.setLatLng(this.state.segmentPath[this.state.segmentPath.length - 1]);
 
                 this.updateFocusText(targetDist);
-                document.getElementById('progress-bar').style.width = `${progress * 100}%`;
-                document.getElementById('distance-traveled').innerText = `${(totalDist * progress).toFixed(1)} km`;
+                
+                const progressBar = document.getElementById(this.state.isMobile ? 'progress-bar-mobile' : 'progress-bar-desktop');
+                progressBar.style.width = `${progress * 100}%`;
+                
+                const distanceTraveled = document.getElementById(this.state.isMobile ? 'distance-traveled-mobile' : 'distance-traveled-desktop');
+                distanceTraveled.innerText = `${(totalDist * progress).toFixed(1)} km`;
 
                 if (progress >= 1) this.finishTrip();
                 else this.state.animationFrameId = requestAnimationFrame(() => this.animateLoop());
             }
+            
             finishTrip() {
                 cancelAnimationFrame(this.state.animationFrameId);
                 this.state.isFocusing = false;
                 const lang = this.state.language;
-                const startName = this.state.baseRoute.stations[document.getElementById('station-start').value].names[lang];
-                const endName = this.state.baseRoute.stations[document.getElementById('station-end').value].names[lang];
-                const serviceIdx = document.getElementById('service-type').selectedIndex;
+                const prefix = this.state.isMobile ? '-mobile' : '-desktop';
+                
+                const startName = this.state.baseRoute.stations[document.getElementById(`station-start${prefix}`).value].names[lang];
+                const endName = this.state.baseRoute.stations[document.getElementById(`station-end${prefix}`).value].names[lang];
+                const serviceIdx = document.getElementById(`service-type${prefix}`).selectedIndex;
                 const serviceName = this.state.baseRoute.services[serviceIdx].names[lang];
-                const trip = { date: new Date().toLocaleDateString(), route: `${serviceName} (${startName}→${endName})`, duration: this.state.segmentDuration, seat: this.state.selectedSeat };
+                const trip = { 
+                    date: new Date().toLocaleDateString(), 
+                    route: `${serviceName} (${startName}→${endName})`, 
+                    duration: this.state.segmentDuration, 
+                    seat: this.state.selectedSeat 
+                };
                 this.saveHistory(trip);
                 alert(TRANSLATIONS[lang].arrived);
                 location.reload();
             }
-            saveHistory(trip) { let history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); history.unshift(trip); localStorage.setItem('railFocusHistory', JSON.stringify(history)); }
-            loadHistory() { const history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); const list = document.getElementById('history-list'); if (history.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>'; return; } list.innerHTML = history.map(h => `<div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center"><div><div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div><div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div></div><div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div></div>`).join(''); }
-            toggleHistory() { document.getElementById('history-modal').classList.toggle('hidden'); }
-            abandonTrip() { if (confirm(TRANSLATIONS[this.state.language].confirmStop)) { cancelAnimationFrame(this.state.animationFrameId); location.reload(); } }
+            
+            saveHistory(trip) { 
+                let history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); 
+                history.unshift(trip); 
+                localStorage.setItem('railFocusHistory', JSON.stringify(history)); 
+            }
+            
+            loadHistory() { 
+                const history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); 
+                const list = document.getElementById('history-list'); 
+                if (history.length === 0) { 
+                    list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>'; 
+                    return; 
+                } 
+                list.innerHTML = history.map(h => `<div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center"><div><div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div><div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div></div><div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div></div>`).join(''); 
+            }
+            
+            toggleHistory() { 
+                document.getElementById('history-modal').classList.toggle('hidden'); 
+            }
+            
+            abandonTrip() { 
+                if (confirm(TRANSLATIONS[this.state.language].confirmStop)) { 
+                    cancelAnimationFrame(this.state.animationFrameId); 
+                    location.reload(); 
+                } 
+            }
         };
 
         const app = new App();
+        
         function handleUserLeft() {
-            // Update UI (though user can't see it immediately
+            // Update UI (though user can't see it immediately)
             document.title = "⚠️ Come back!";
 
             // Mobile-friendly notifications
@@ -1786,10 +2229,8 @@
         }
 
         function handleUserReturned() {
-
             // Restore Title
             document.title = originalTitle;
-
             console.log("User returned at " + new Date().toLocaleTimeString());
         };
     </script>
