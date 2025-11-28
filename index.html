@@ -30,6 +30,40 @@
         body {
             font-family: 'Noto Sans JP', 'Noto Sans TC', sans-serif;
             background-color: #f3f4f6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            /* Prevent zoom on input focus */
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            body {
+                /* Prevent pull-to-refresh and overscroll */
+                overscroll-behavior: none;
+                touch-action: manipulation;
+            }
+            
+            /* Better touch targets on mobile */
+            .seat {
+                min-height: 44px;
+                min-width: 44px;
+            }
+            
+            .car-tab {
+                min-width: 56px;
+                min-height: 56px;
+            }
+            
+            button, select, .route-card {
+                min-height: 44px;
+            }
+            
+            /* Better mobile typography */
+            .text-xs {
+                font-size: 0.8rem;
+            }
         }
 
         .train-font {
@@ -58,18 +92,91 @@
             width: 100%;
             z-index: 0;
             background-color: #a5b4c4;
+            /* Prevent zoom on mobile map */
+            touch-action: pan-x pan-y;
         }
 
         .seat {
             transition: all 0.2s;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
-        .seat:hover:not(.taken) {
-            transform: scale(1.1);
+        .seat:active:not(.taken) {
+            transform: scale(0.95);
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .seat:hover {
+                transform: none;
+            }
+            
+            .seat:active:not(.taken) {
+                transform: scale(0.95);
+            }
+        }
+
+        /* Mobile-first button styles */
+        .mobile-button {
+            min-height: 44px;
+            padding: 12px 16px;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-button {
+                width: 100%;
+                min-height: 48px;
+                font-size: 16px;
+                padding: 14px 20px;
+            }
         }
 
         #controls-panel {
             transition: transform 0.3s ease-in-out, height 0.3s ease-in-out;
+        }
+
+        /* Mobile-optimized controls panel */
+        @media (max-width: 768px) {
+            #controls-panel {
+                border-radius: 20px 20px 0 0;
+                /* Prevent keyboard viewport issues */
+                max-height: 85vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            /* Better mobile scroll handling */
+            .overflow-y-auto {
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+            
+            .overflow-y-auto::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        /* Mobile slide-up animation improvements */
+        @media (max-width: 768px) {
+            .mobile-slide-up {
+                animation: slideUp 0.3s ease-out;
+            }
+            
+            @keyframes slideUp {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
         }
 
         .route-card.selected {
@@ -160,6 +267,8 @@
             cursor: pointer;
             transition: all 0.2s;
             background: white;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
 
         .car-tab.active {
@@ -168,6 +277,20 @@
             border-color: #0f766e;
             transform: scale(1.05);
             box-shadow: 0 4px 6px -1px rgba(13, 148, 136, 0.3);
+        }
+
+        .car-tab:active {
+            transform: scale(0.95);
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .car-tab:hover {
+                transform: none;
+            }
+            
+            .car-tab:active {
+                transform: scale(0.95);
+            }
         }
 
         .car-tab .car-num {
@@ -179,6 +302,20 @@
         .car-tab .car-type {
             font-size: 0.6rem;
             margin-top: 2px;
+        }
+
+        /* Mobile-specific car tab improvements */
+        @media (max-width: 768px) {
+            .car-tab {
+                width: 56px;
+                height: 56px;
+                margin: 0 2px;
+            }
+            
+            #car-list-container {
+                padding: 8px 0;
+                gap: 4px;
+            }
         }
 
         .shinkansen-door-window {
@@ -239,6 +376,236 @@
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
+        /* Mobile focus mode improvements */
+        @media (max-width: 768px) {
+            #view-focus {
+                padding: 20px 16px;
+            }
+            
+            #next-station-display {
+                font-size: 1.5rem;
+                margin-bottom: 20px;
+            }
+            
+            #timer-display {
+                font-size: 2.5rem;
+            }
+            
+            /* Larger progress circle for mobile */
+            #view-focus > div > div:nth-child(4) {
+                width: 160px !important;
+                height: 160px !important;
+            }
+            
+            /* Better mobile distance display */
+            .flex.justify-between.w-full.text-xs.text-slate-400.font-mono {
+                padding: 0 16px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Mobile header improvements */
+        @media (max-width: 768px) {
+            header {
+                height: 56px;
+                padding: 0 16px;
+            }
+            
+            header h1 {
+                font-size: 1rem;
+            }
+            
+            header select {
+                font-size: 14px;
+                padding: 6px 8px;
+            }
+            
+            /* Hide text on very small screens, show icons */
+            @media (max-width: 360px) {
+                #nav-history {
+                    display: none;
+                }
+            }
+        }
+
+        /* Mobile modal improvements */
+        @media (max-width: 768px) {
+            #history-modal {
+                padding: 16px;
+                align-items: flex-end;
+            }
+            
+            #history-modal > div {
+                max-height: 70vh;
+                border-radius: 16px 16px 0 0;
+                animation: slideUpModal 0.3s ease-out;
+            }
+            
+            @keyframes slideUpModal {
+                from {
+                    transform: translateY(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        }
+
+        /* Mobile door overlay improvements */
+        @media (max-width: 768px) {
+            #door-overlay {
+                z-index: 9999;
+            }
+            
+            .shinkansen-door-window {
+                width: 100px;
+                height: 160px;
+                border-width: 6px;
+            }
+            
+            .door-warning-sticker {
+                font-size: 8px;
+                width: 80px;
+                height: 24px;
+            }
+        }
+
+        /* Mobile select improvements */
+        @media (max-width: 768px) {
+            select {
+                font-size: 16px; /* Prevent zoom on iOS */
+                padding: 12px;
+                border-radius: 8px;
+                min-height: 44px;
+            }
+            
+            /* Better mobile grid layout */
+            .grid.grid-cols-2.gap-3 {
+                gap: 12px;
+            }
+        }
+
+        /* Mobile route cards */
+        @media (max-width: 768px) {
+            .route-card {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+            
+            .route-card h3 {
+                font-size: 1rem;
+            }
+            
+            .train-thumb {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        /* Mobile notification style improvements */
+        @media (max-width: 768px) {
+            .bg-white\/90.backdrop-blur {
+                padding: 12px;
+                border-radius: 12px;
+                margin: 8px;
+            }
+        }
+
+        /* Mobile-specific utility classes */
+        .touch-target {
+            min-height: 44px;
+            min-width: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-select {
+            font-size: 16px !important; /* Prevent zoom on iOS */
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .mobile-device {
+            /* Additional mobile-specific styles */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .keyboard-open #map {
+            display: none; /* Hide map when keyboard is open */
+        }
+
+        /* Enhanced mobile seat selection */
+        @media (max-width: 768px) {
+            .seat.selected {
+                background-color: #0f766e !important;
+                color: white !important;
+                border-color: #0f766e !important;
+                transform: scale(1.1);
+                box-shadow: 0 4px 8px rgba(13, 148, 136, 0.3);
+            }
+        }
+
+        /* Mobile toast notification */
+        .mobile-toast {
+            transition: all 0.3s ease;
+            transform: translateX(-50%) translateY(-20px);
+            opacity: 0;
+        }
+
+        /* Improved mobile route cards */
+        @media (max-width: 768px) {
+            .route-card {
+                padding: 16px;
+                margin: 8px 0;
+                border-radius: 12px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            
+            .route-card:active {
+                transform: scale(0.98);
+                transition: transform 0.1s ease;
+            }
+        }
+
+        /* Mobile-specific loading screen */
+        @media (max-width: 768px) {
+            #loading-screen {
+                background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+            }
+        }
+
+        /* Better mobile focus indicators */
+        @media (max-width: 768px) {
+            button:focus,
+            select:focus,
+            .seat:focus {
+                outline: 2px solid #0f766e;
+                outline-offset: 2px;
+            }
+        }
+
+        /* Mobile landscape optimizations */
+        @media (max-width: 768px) and (orientation: landscape) {
+            #controls-panel {
+                max-height: 90vh;
+            }
+            
+            #view-focus {
+                padding: 12px 16px;
+            }
+            
+            .car-tab {
+                width: 48px;
+                height: 48px;
+            }
+        }
     </style>
 </head>
 
@@ -250,19 +617,20 @@
         <p class="text-sm text-slate-500 mt-2">Downloading routes and stations</p>
     </div>
 
-    <header class="bg-slate-900 text-white h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
+    <header class="bg-slate-900 text-white h-14 md:h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
-            <h1 class="font-bold text-lg tracking-wide" id="app-title">RAIL FOCUS</h1>
+            <h1 class="font-bold text-lg md:text-lg tracking-wide" id="app-title">RAIL FOCUS</h1>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 md:gap-3">
             <select id="lang-select" onchange="app.setLanguage(this.value)"
-                class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 focus:outline-none focus:border-teal-500">
+                class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 md:p-1 focus:outline-none focus:border-teal-500 mobile-select">
                 <option value="en">English</option>
                 <option value="tc">繁體中文</option>
                 <option value="ja">日本語</option>
             </select>
-            <button onclick="app.toggleHistory()" class="text-sm hover:text-teal-300 transition flex items-center">
+            <button onclick="app.toggleHistory()" 
+                class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
                 <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
                     id="nav-history">Travel Log</span>
             </button>
@@ -343,7 +711,7 @@
                         </div>
 
                         <button onclick="app.confirmRoute()"
-                            class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2">
+                            class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2 touch-target">
                             <span id="btn-board">Board Train</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
@@ -380,7 +748,7 @@
                                 </span>
                             </div>
                             <button id="confirm-seat-btn" disabled onclick="app.startFocus()"
-                                class="w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition">
+                                class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition touch-target">
                                 <span id="btn-start-focus">Start Focus</span>
                             </button>
                         </div>
@@ -418,7 +786,8 @@
                             ⚠️ Stay on this tab! Switching will end your focus session.
                         </div>
                     </div>
-                    <button onclick="app.abandonTrip()" class="mt-4 text-red-400 hover:text-red-600 text-sm underline"
+                    <button onclick="app.abandonTrip()" 
+                        class="mobile-button mt-4 text-red-400 hover:text-red-600 text-sm underline bg-red-50 hover:bg-red-100 border border-red-200 rounded-lg p-3 touch-target"
                         id="btn-stop">Emergency Stop (Quit)</button>
                 </div>
             </div>
@@ -462,14 +831,44 @@
 
     <script>
         let originalTitle = document.title;
-        if (!("Notification" in window)) {
-            alert("This browser does not support desktop notification");
-        } else if (1 === 1) {
-            Notification.requestPermission().then(permission => {
-                new Notification("Notifications enabled!");
+        
+        // Mobile device detection and optimization
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        
+        // Mobile-specific optimizations
+        if (isMobile) {
+            document.body.classList.add('mobile-device');
+            
+            // Prevent zoom on input focus for iOS
+            if (isIOS) {
+                const meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+                document.head.appendChild(meta);
             }
-            )
-        };
+            
+            // Better touch feedback
+            document.addEventListener('touchstart', function() {}, { passive: true });
+            document.addEventListener('touchend', function() {}, { passive: true });
+        }
+
+        // Enhanced notification system with mobile support
+        if (!("Notification" in window)) {
+            console.log("This browser does not support desktop notification");
+        } else if (Notification.permission === 'default') {
+            // Request permission on user interaction
+            setTimeout(() => {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification("Notifications enabled!", {
+                            body: "You'll stay focused with train notifications",
+                            icon: "https://cdn-icons-png.flaticon.com/512/564/564619.png"
+                        });
+                    }
+                });
+            }, 2000);
+        }
         // --- Utilities ---
         function smoothPolyline(path, iterations = 4) {
             if (iterations === 0 || !path || path.length < 2) return path;
@@ -648,11 +1047,193 @@
                     isFocusing: false,
                     startTime: null,
                     activeStations: [],
-                    animationFrameId: null
+                    animationFrameId: null,
+                    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
+                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'
                 };
                 this.map = null;
                 this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
                 this.init();
+                this.setupMobileListeners();
+            }
+
+            setupMobileListeners() {
+                if (!this.state.isMobile) return;
+
+                // Handle orientation changes
+                window.addEventListener('orientationchange', () => {
+                    setTimeout(() => {
+                        this.state.orientation = window.innerWidth > window.innerHeight ? 'landscape' : 'portrait';
+                        this.handleOrientationChange();
+                    }, 100);
+                });
+
+                // Handle viewport changes (keyboard, mobile UI)
+                window.addEventListener('resize', () => {
+                    clearTimeout(this.resizeTimeout);
+                    this.resizeTimeout = setTimeout(() => {
+                        this.handleViewportChange();
+                    }, 250);
+                });
+
+                // Prevent pull-to-refresh on mobile
+                let touchStartY = 0;
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                }, { passive: true });
+
+                document.addEventListener('touchmove', (e) => {
+                    const touchY = e.touches[0].clientY;
+                    const touchDiff = touchY - touchStartY;
+                    
+                    // Prevent pull-to-refresh when at top of page
+                    if (window.scrollY === 0 && touchDiff > 0) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                // Add haptic feedback for mobile interactions
+                this.hapticFeedback = {
+                    light: () => {
+                        if (navigator.vibrate) navigator.vibrate(10);
+                    },
+                    medium: () => {
+                        if (navigator.vibrate) navigator.vibrate(20);
+                    },
+                    heavy: () => {
+                        if (navigator.vibrate) navigator.vibrate(30);
+                    }
+                };
+            }
+
+            handleOrientationChange() {
+                // Recalculate map bounds and UI elements
+                if (this.map && this.routeLayers.border) {
+                    const isMobile = this.state.isMobile;
+                    this.map.invalidateSize();
+                    
+                    // Adjust padding based on orientation
+                    const paddingTopLeft = isMobile && this.state.orientation === 'portrait' 
+                        ? [0, window.innerHeight / 2] 
+                        : [400, 50];
+                    const paddingBottomRight = isMobile ? [0, 0] : [0, 0];
+
+                    if (this.routeLayers.border.getBounds().isValid()) {
+                        this.map.flyToBounds(this.routeLayers.border.getBounds(), {
+                            paddingTopLeft,
+                            paddingBottomRight,
+                            duration: 0.5
+                        });
+                    }
+                }
+
+                // Adjust focus mode layout for orientation
+                this.adjustFocusModeLayout();
+            }
+
+            handleViewportChange() {
+                // Handle virtual keyboard and mobile UI changes
+                const isKeyboardOpen = window.innerHeight < window.screen.height * 0.75;
+                
+                if (isKeyboardOpen) {
+                    // Hide non-essential UI elements when keyboard is open
+                    document.body.classList.add('keyboard-open');
+                } else {
+                    document.body.classList.remove('keyboard-open');
+                }
+
+                // Refresh map if needed
+                if (this.map) {
+                    setTimeout(() => this.map.invalidateSize(), 100);
+                }
+            }
+
+            adjustFocusModeLayout() {
+                const focusView = document.getElementById('view-focus');
+                if (!focusView) return;
+
+                const isPortrait = this.state.orientation === 'portrait';
+                const progressCircle = focusView.querySelector('div > div:nth-child(4)');
+                
+                if (isPortrait && this.state.isMobile) {
+                    // Optimize for portrait mode
+                    if (progressCircle) {
+                        progressCircle.style.width = '140px';
+                        progressCircle.style.height = '140px';
+                    }
+                    
+                    // Adjust timer font size
+                    const timerDisplay = document.getElementById('timer-display');
+                    if (timerDisplay) {
+                        timerDisplay.style.fontSize = '2rem';
+                    }
+                } else {
+                    // Landscape or desktop
+                    if (progressCircle) {
+                        progressCircle.style.width = '192px';
+                        progressCircle.style.height = '192px';
+                    }
+                    
+                    const timerDisplay = document.getElementById('timer-display');
+                    if (timerDisplay) {
+                        timerDisplay.style.fontSize = '2.5rem';
+                    }
+                }
+            }
+
+            mobileSeatSelect(seatNum, element) {
+                if (element.classList.contains('taken')) {
+                    this.hapticFeedback.light();
+                    return;
+                }
+
+                // Remove previous selection
+                document.querySelectorAll('.seat').forEach(seat => {
+                    if (!seat.classList.contains('taken')) {
+                        seat.classList.remove('bg-teal-500', 'text-white', 'border-teal-500');
+                        seat.classList.add('bg-white', 'text-slate-600');
+                    }
+                });
+
+                // Add new selection with haptic feedback
+                element.classList.remove('bg-white', 'text-slate-600');
+                element.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
+                this.hapticFeedback.medium();
+
+                this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
+                document.getElementById('confirm-seat-btn').disabled = false;
+                
+                // Add visual confirmation for mobile
+                if (this.state.isMobile) {
+                    this.showMobileToast(`Seat ${seatNum} selected`);
+                }
+            }
+
+            showMobileToast(message) {
+                // Remove existing toast
+                const existingToast = document.querySelector('.mobile-toast');
+                if (existingToast) {
+                    existingToast.remove();
+                }
+
+                // Create new toast
+                const toast = document.createElement('div');
+                toast.className = 'mobile-toast fixed top-20 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white px-4 py-2 rounded-lg shadow-lg z-[9999] text-sm font-medium';
+                toast.textContent = message;
+                document.body.appendChild(toast);
+
+                // Animate in
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(-50%) translateY(0)';
+                    toast.style.opacity = '1';
+                }, 10);
+
+                // Auto remove
+                setTimeout(() => {
+                    toast.style.transform = 'translateX(-50%) translateY(-20px)';
+                    toast.style.opacity = '0';
+                    setTimeout(() => toast.remove(), 300);
+                }, 2000);
             }
 
             async init() {
@@ -957,25 +1538,54 @@
             renderSeats() {
                 const grid = document.getElementById('seat-grid');
                 const isGreen = (this.state.currentCar === 8);
+                const isMobile = this.state.isMobile;
+                
                 if (isGreen) {
-                    grid.className = "grid grid-cols-5 gap-2";
+                    grid.className = isMobile ? "grid grid-cols-5 gap-3 p-2" : "grid grid-cols-5 gap-2";
                     grid.innerHTML = Array.from({ length: 8 }, (_, i) => {
                         const r = i + 1;
-                        return `<div onclick="app.selectSeat('${r}A', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500">A</div><div onclick="app.selectSeat('${r}B', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500">B</div><div class="flex items-center justify-center text-slate-300 text-xs font-mono">${r}</div><div onclick="app.selectSeat('${r}C', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500">C</div><div onclick="app.selectSeat('${r}D', this)" class="seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500">D</div>`;
+                        const seatClass = isMobile ? 
+                            "seat h-12 rounded border flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-target" :
+                            "seat h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white hover:border-teal-500";
+                        return `<div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
+                                <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
+                                <div class="flex items-center justify-center text-slate-300 text-xs font-mono">${r}</div>
+                                <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
+                                <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>`;
                     }).join('');
                 } else {
-                    grid.className = "flex flex-col gap-2";
+                    grid.className = isMobile ? "flex flex-col gap-3 p-2" : "flex flex-col gap-2";
                     grid.innerHTML = Array.from({ length: 10 }, (_, i) => {
                         const r = i + 1;
-                        return `<div class="flex justify-between items-center w-full"><div class="flex gap-1"><div onclick="app.selectSeat('${r}A', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white">A</div><div onclick="app.selectSeat('${r}B', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white">B</div><div onclick="app.selectSeat('${r}C', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white">C</div></div><span class="text-xs text-slate-400 font-mono w-6 text-center">${r}</span><div class="flex gap-1"><div onclick="app.selectSeat('${r}D', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white">D</div><div onclick="app.selectSeat('${r}E', this)" class="seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white">E</div></div></div>`;
+                        const seatClass = isMobile ?
+                            "seat w-12 h-12 rounded border flex items-center justify-center text-sm font-bold cursor-pointer bg-white touch-target" :
+                            "seat w-8 h-8 sm:w-10 sm:h-10 rounded border flex items-center justify-center text-xs font-bold cursor-pointer bg-white";
+                        return `<div class="flex justify-between items-center w-full">
+                                    <div class="flex gap-2">
+                                        <div onclick="app.selectSeat('${r}A', this)" class="${seatClass}">A</div>
+                                        <div onclick="app.selectSeat('${r}B', this)" class="${seatClass}">B</div>
+                                        <div onclick="app.selectSeat('${r}C', this)" class="${seatClass}">C</div>
+                                    </div>
+                                    <span class="text-sm text-slate-400 font-mono w-8 text-center">${r}</span>
+                                    <div class="flex gap-2">
+                                        <div onclick="app.selectSeat('${r}D', this)" class="${seatClass}">D</div>
+                                        <div onclick="app.selectSeat('${r}E', this)" class="${seatClass}">E</div>
+                                    </div>
+                                </div>`;
                     }).join('');
                 }
             }
             selectSeat(seatNum, el) {
-                if (el.classList.contains('taken')) return;
-                document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
-                el.classList.remove('bg-white', 'text-slate-600'); el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
-                this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`; document.getElementById('confirm-seat-btn').disabled = false;
+                if (this.state.isMobile) {
+                    this.mobileSeatSelect(seatNum, el);
+                } else {
+                    // Desktop behavior
+                    if (el.classList.contains('taken')) return;
+                    document.querySelectorAll('.seat').forEach(s => !s.classList.contains('taken') && s.classList.remove('bg-teal-500', 'text-white', 'border-teal-500') || s.classList.add('bg-white'));
+                    el.classList.remove('bg-white', 'text-slate-600'); el.classList.add('bg-teal-500', 'text-white', 'border-teal-500');
+                    this.state.selectedSeat = `Car ${this.state.currentCar}-${seatNum}`;
+                    document.getElementById('confirm-seat-btn').disabled = false;
+                }
             }
             startFocus() {
                 const overlay = document.getElementById('door-overlay');
@@ -1093,30 +1703,64 @@
         const app = new App();
         function handleUserLeft() {
             // Update UI (though user can't see it immediately
-            // Strategy A: Flash the Title
             document.title = "⚠️ Come back!";
 
-            // Strategy B: System Notification (Best for when user is away)
-            const notification = new Notification("Hey!", {
-                body: "You switched tabs. Come back to finish your task!",
-                icon: "https://cdn-icons-png.flaticon.com/512/564/564619.png" // Generic alert icon
-            });
+            // Mobile-friendly notifications
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if ('Notification' in window && Notification.permission === 'granted') {
+                // Strategy A: System Notification (works better on mobile)
+                const notification = new Notification("Focus Lost!", {
+                    body: isMobile ? 
+                        "You switched apps. Return to continue your focus session." :
+                        "You switched tabs. Come back to finish your task!",
+                    icon: "https://cdn-icons-png.flaticon.com/512/564/564619.png",
+                    tag: "focus-session",
+                    requireInteraction: true
+                });
 
-            // Clicking notification brings user back (in some browsers)
-            notification.onclick = function () {
-                window.focus();
-                this.close();
-            };
+                notification.onclick = function () {
+                    window.focus();
+                    this.close();
+                };
+            }
 
-            // Strategy C: Standard Alert
-            // NOTE: Browsers often PAUSE this until the user clicks back to the tab
-                // We use a tiny timeout to ensure the tab switch has fully registered
+            // Mobile-specific fallback
+            if (isMobile) {
+                // Strategy B: Haptic feedback if available
+                if (navigator.vibrate) {
+                    navigator.vibrate([200, 100, 200]); // Strong vibration pattern
+                }
+                
+                // Strategy C: Show mobile toast instead of alert
+                setTimeout(() => {
+                    if (app && app.showMobileToast) {
+                        app.showMobileToast("⚠️ Focus lost! Return to continue");
+                    }
+                    
+                    // Auto-stop after delay for mobile
+                    setTimeout(() => {
+                        if (app && app.state && app.state.isFocusing) {
+                            cancelAnimationFrame(app.state.animationFrameId);
+                            console.log("Auto-stopped focus session due to tab switch");
+                            // Don't reload immediately on mobile, just stop the session
+                            if (confirm("Focus session interrupted. Would you like to restart?")) {
+                                location.reload();
+                            }
+                        }
+                    }, 5000);
+                }, 1000);
+            } else {
+                // Desktop alert fallback
                 setTimeout(() => {
                     alert("You switched tabs! Your Train May Need to stop.");
-                    cancelAnimationFrame(app.state.animationFrameId); location.reload();
-                    console.log("Userd at ");
+                    if (app && app.state && app.state.isFocusing) {
+                        cancelAnimationFrame(app.state.animationFrameId);
+                        location.reload();
+                    }
                 }, 3000);
             }
+        }
 
         function handleUserReturned() {
 
