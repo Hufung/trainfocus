@@ -454,8 +454,8 @@
             }
         }
 
-        /* Tablet optimizations */
-        @media (min-width: 769px) and (max-width: 1024px) {
+        /* Desktop optimizations */
+        @media (min-width: 1025px) {
             #controls-panel {
                 width: 450px;
             }
@@ -496,25 +496,25 @@
         <p class="text-sm text-slate-500 mt-2">Downloading routes and stations</p>
     </div>
 
-    <header class="bg-slate-900 text-white h-14 md:h-14 flex items-center justify-between px-4 md:px-6 shadow-md z-50 relative">
+    <header class="bg-slate-900 text-white h-14 lg:h-14 flex items-center justify-between px-4 lg:px-6 shadow-md z-50 relative">
         <div class="flex items-center gap-3">
             <i class="fa-solid fa-train-subway text-teal-400 text-xl"></i>
             <h1 class="font-bold text-lg md:text-lg tracking-wide" id="app-title">RAIL FOCUS</h1>
         </div>
         <div class="flex items-center gap-2 md:gap-3">
             <select id="lang-select" onchange="app.setLanguage(this.value)"
-                class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 md:p-1 focus:outline-none focus:border-teal-500 mobile-select">
+                class="bg-slate-800 text-white border border-slate-600 text-xs rounded p-1 lg:p-1 focus:outline-none focus:border-teal-500 mobile-select">
                 <option value="en">English</option>
                 <option value="tc">繁體中文</option>
                 <option value="ja">日本語</option>
             </select>
             <button onclick="app.toggleHistory()"
                 class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
-                <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
+                <i class="fa-solid fa-clock-rotate-left lg:mr-2"></i><span class="hidden lg:inline"
                     id="nav-history">Travel Log</span>
             </button>
             <button onclick="app.toggleMobileMode()"
-                class="md:hidden text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target"
+                class="lg:hidden text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target"
                 id="mobile-mode-btn">
                 <i class="fa-solid fa-bars"></i>
             </button>
@@ -525,16 +525,16 @@
         <div id="map" class="absolute inset-0"></div>
 
         <div id="map-overlay"
-            class="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg z-[40] hidden md:block pointer-events-none">
+            class="absolute top-4 right-4 bg-white/90 backdrop-blur p-3 rounded-lg shadow-lg z-[40] hidden lg:block pointer-events-none">
             <div class="text-xs font-bold text-slate-500 uppercase" id="lbl-current-loc">Current Location</div>
             <div id="current-loc-text" class="text-sm font-mono">Select a route...</div>
         </div>
 
         <div id="controls-panel" class="absolute bg-white shadow-2xl z-50 flex flex-col
             w-full h-[60vh] bottom-0 rounded-t-2xl border-t border-slate-200
-            md:w-96 md:h-full md:top-0 md:left-0 md:rounded-none md:border-r md:border-t-0">
+            lg:w-96 lg:h-full lg:top-0 lg:left-0 lg:rounded-none lg:border-r lg:border-t-0">
 
-            <div class="w-full flex justify-center pt-3 pb-1 md:hidden">
+            <div class="w-full flex justify-center pt-3 pb-1 lg:hidden">
                 <div class="w-12 h-1.5 bg-slate-300 rounded-full"></div>
             </div>
 
@@ -543,7 +543,7 @@
                 <!-- Route Selection -->
                 <div id="view-route"
                     class="flex flex-col h-full p-6 absolute inset-0 bg-white transition-transform duration-300">
-                    <h2 class="text-xl md:text-2xl font-bold mb-1 text-slate-800" id="lbl-select-route">Select Route
+                    <h2 class="text-xl lg:text-2xl font-bold mb-1 text-slate-800" id="lbl-select-route">Select Route
                     </h2>
                     <p class="text-slate-500 text-sm mb-4" id="lbl-select-route-desc">Choose your line and stations.</p>
 
@@ -551,13 +551,6 @@
 
                     <div id="route-confirm-container"
                         class="absolute bottom-0 left-0 right-0 p-4 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl">
-                        <div class="flex justify-between items-center mb-2">
-                            <button onclick="app.cancelRouteSelection()"
-                                class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition">
-                                <i class="fa-solid fa-chevron-down mr-1"></i> <span class="text-xs font-bold"
-                                    id="lbl-back-route">Back</span>
-                            </button>
-                        </div>
 
                         <div id="selected-train-display" class="hidden">
                             <img id="train-hero-img" src="" class="train-hero" alt="Train Model">
@@ -594,11 +587,18 @@
                             <div id="segment-time" class="font-mono font-bold text-lg text-teal-600">-- min</div>
                         </div>
 
-                        <button onclick="app.confirmRoute()"
-                            class="mobile-button w-full py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2 touch-target">
-                            <span id="btn-board">Board Train</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </button>
+                        <div class="flex gap-3">
+                            <button onclick="app.cancelRouteSelection()"
+                                class="flex-1 text-slate-400 hover:text-slate-600 py-3 px-4 rounded-lg border border-slate-200 hover:bg-slate-50 transition touch-target">
+                                <i class="fa-solid fa-chevron-left mr-1"></i> <span class="text-xs font-bold"
+                                    id="lbl-back-route">Back</span>
+                            </button>
+                            <button onclick="app.confirmRoute()"
+                                class="flex-1 mobile-button py-3 bg-teal-600 text-white rounded-lg font-bold shadow-lg hover:bg-teal-700 flex items-center justify-center gap-2 touch-target">
+                                <span id="btn-board">Board Train</span>
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -608,7 +608,7 @@
                     <div class="flex items-center mb-2">
                         <button onclick="app.goBackToRoutes()" class="mr-4 text-slate-400 hover:text-slate-600"><i
                                 class="fa-solid fa-arrow-left"></i></button>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
+                        <h2 class="text-xl lg:text-2xl font-bold text-slate-800" id="lbl-select-seat">Select Seat</h2>
                     </div>
                     <div class="flex gap-2 overflow-x-auto pb-2 mb-2" id="car-list-container"></div>
                     <p class="text-slate-500 text-sm mb-2" id="lbl-car-info">Car 1 - Ordinary</p>
@@ -650,10 +650,10 @@
                             Station</h3>
                         <h2 id="next-station-display" class="text-2xl font-bold mb-6 text-slate-800">--</h2>
                         <div
-                            class="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
+                            class="relative w-40 h-40 lg:w-48 lg:h-48 flex items-center justify-center rounded-full border-4 border-slate-100 mb-6">
                             <div class="text-center">
                                 <div id="timer-display"
-                                    class="text-3xl md:text-4xl font-bold train-font text-slate-800">00:00</div>
+                                    class="text-3xl lg:text-4xl font-bold train-font text-slate-800">00:00</div>
                                 <div class="text-xs text-slate-400 mt-1" id="lbl-remaining">Remaining</div>
                             </div>
                         </div>
@@ -693,18 +693,18 @@
             class="fixed inset-0 z-[200] pointer-events-none hidden flex items-center justify-center">
             <div id="door-left"
                 class="w-1/2 h-full bg-slate-100 border-r border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-end items-center">
-                <div class="shinkansen-door-window mr-4 md:mr-8">
+                <div class="shinkansen-door-window mr-4 lg:mr-8">
                     <div class="door-glass-reflection"></div>
                 </div>
-                <div class="door-warning-sticker mr-4 md:mr-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                <div class="door-warning-sticker mr-4 lg:mr-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
                 </div>
             </div>
             <div id="door-right"
                 class="w-1/2 h-full bg-slate-100 border-l border-slate-300 relative shadow-2xl transform transition-transform duration-[1500ms] ease-in-out flex justify-start items-center">
-                <div class="shinkansen-door-window ml-4 md:ml-8">
+                <div class="shinkansen-door-window ml-4 lg:ml-8">
                     <div class="door-glass-reflection"></div>
                 </div>
-                <div class="door-warning-sticker ml-4 md:ml-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
+                <div class="door-warning-sticker ml-4 lg:ml-8"><i class="fa-solid fa-hand bg-transparent mr-2"></i> DOOR
                 </div>
             </div>
         </div>
@@ -914,7 +914,7 @@
                     activeStations: [],
                     animationFrameId: null,
                     orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
-                    mobileMode: window.innerWidth < 768
+                    mobileMode: window.innerWidth < 1024
                 };
                 this.map = null;
                 this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null };
