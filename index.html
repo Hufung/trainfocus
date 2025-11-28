@@ -509,6 +509,19 @@
             #view-route {
                 padding: 16px;
             }
+
+            /* Ensure route-confirm-container fits on mobile */
+            #route-confirm-container {
+                max-height: 70vh;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 16px;
+            }
+
+            /* Increase bottom padding for route list on mobile to accommodate larger container */
+            #route-list {
+                padding-bottom: 16rem; /* 256px */
+            }
         }
 
         /* Mobile notification style improvements */
