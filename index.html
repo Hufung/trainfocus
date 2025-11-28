@@ -228,7 +228,7 @@
 
         .train-hero {
             width: 100%;
-            height: 150px;
+            height: 180px;
             object-fit: contain;
             background-color: #f1f5f9;
             border-radius: 8px;
@@ -686,13 +686,13 @@
 
                     <div class="space-y-3 overflow-y-auto flex-1 pr-2 pb-64 md:pb-0" id="route-list"></div>
 
-                    <div id="route-confirm-container"
-                        class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-slate-50 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl md:rounded-xl md:max-h-none overflow-y-auto md:overflow-y-visible">
+                    <div id="route-confirm-container">
+                        class="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-white border-t border-slate-100 translate-y-full transition-transform duration-300 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-20 rounded-t-xl md:rounded-xl max-h-[50vh] md:max-h-none overflow-y-auto md:overflow-y-visible">
                         <div class="flex justify-between items-center mb-2">
                             <button onclick="app.cancelRouteSelection()"
-                                class="text-slate-400 hover:text-slate-500 flex items-center py-1 px-1 -ml-2 rounded hover:bg-slate-50 transition">
+                                class="text-slate-400 hover:text-slate-600 flex items-center py-1 px-2 -ml-2 rounded hover:bg-slate-50 transition touch-target">
                                 <i class="fa-solid fa-chevron-down mr-1"></i> <span class="text-xs font-bold"
-                                    id="lbl-back-route" >Back</span>
+                                    id="lbl-back-route">Back</span>
                             </button>
                         </div>
 
@@ -708,7 +708,7 @@
                             <label class="text-xs font-bold text-slate-500 block mb-1" id="lbl-service">Train
                                 Service</label>
                             <select id="service-type" onchange="app.updateRouteSegment()"
-                                class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                                class="w-full bg-white border border-slate-200 rounded p-2 text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-3 mb-4">
@@ -716,13 +716,13 @@
                                 <label class="text-xs font-bold text-slate-500 block mb-1"
                                     id="lbl-depart">Depart</label>
                                 <select id="station-start" onchange="app.updateRouteSegment()"
-                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
                             </div>
                             <div>
                                 <label class="text-xs font-bold text-slate-500 block mb-1"
                                     id="lbl-arrive">Arrive</label>
                                 <select id="station-end" onchange="app.updateRouteSegment()"
-                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500"></select>
+                                    class="w-full bg-slate-100 border border-slate-200 rounded p-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal-500 mobile-select"></select>
                             </div>
                         </div>
 
