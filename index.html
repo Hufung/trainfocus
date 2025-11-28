@@ -481,10 +481,11 @@
                 border-radius: 8px;
                 min-height: 44px;
             }
-            
-            /* Better mobile grid layout */
+
+            /* Better mobile grid layout - stack selects vertically */
             .grid.grid-cols-2.gap-3 {
-                gap: 12px;
+                grid-template-columns: 1fr;
+                gap: 16px;
             }
         }
 
@@ -494,14 +495,19 @@
                 padding: 16px;
                 margin-bottom: 12px;
             }
-            
+
             .route-card h3 {
                 font-size: 1rem;
             }
-            
+
             .train-thumb {
                 width: 50px;
                 height: 50px;
+            }
+
+            /* Adjust view-route padding on mobile */
+            #view-route {
+                padding: 16px;
             }
         }
 
@@ -529,12 +535,29 @@
             border-radius: 6px;
         }
 
-        .mobile-device {
+        .ismobile {
             /* Additional mobile-specific styles */
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+        }
+
+        /* Responsive display utilities */
+        .mobile-only {
+            display: none;
+        }
+
+        .ismobile .mobile-only {
+            display: block;
+        }
+
+        .desktop-only {
+            display: block;
+        }
+
+        .ismobile .desktop-only {
+            display: none;
         }
 
         .keyboard-open #map {
@@ -838,7 +861,7 @@
         
         // Mobile-specific optimizations
         if (isMobile) {
-            document.body.classList.add('mobile-device');
+            document.body.classList.add('ismobile');
             
             // Prevent zoom on input focus for iOS
             if (isIOS) {
