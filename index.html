@@ -27,6 +27,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
         body {
             font-family: 'Noto Sans JP', 'Noto Sans TC', sans-serif;
@@ -650,10 +653,15 @@
                 <option value="tc">繁體中文</option>
                 <option value="ja">日本語</option>
             </select>
-            <button onclick="app.toggleHistory()" 
+            <button onclick="app.toggleHistory()"
                 class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
                 <i class="fa-solid fa-clock-rotate-left md:mr-2"></i><span class="hidden md:inline"
                     id="nav-history">Travel Log</span>
+            </button>
+            <!-- User Auth Button -->
+            <button id="auth-btn" onclick="app.toggleAuthModal()"
+                class="text-sm hover:text-teal-300 transition flex items-center p-2 rounded hover:bg-slate-800 touch-target">
+                <i class="fa-solid fa-user md:mr-2"></i><span class="hidden md:inline" id="auth-btn-text">Login</span>
             </button>
         </div>
     </header>
@@ -823,6 +831,104 @@
                             class="fa-solid fa-xmark"></i></button>
                 </div>
                 <div id="history-list" class="p-4 overflow-y-auto space-y-3 bg-slate-50 flex-1"></div>
+            </div>
+        </div>
+
+        <!-- Auth Modal with Tabs -->
+        <div id="auth-modal"
+            class="fixed inset-0 bg-black/50 z-[100] hidden flex items-center justify-center p-2 sm:p-4 md:p-6 backdrop-blur-sm items-end md:items-center">
+            <div class="bg-white rounded-t-2xl md:rounded-xl shadow-2xl w-full max-w-md overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh]">
+                <!-- Header with close button -->
+                <div class="p-3 sm:p-4 border-b border-slate-100 flex justify-between items-center bg-white">
+                    <h3 class="font-bold text-base sm:text-lg" id="auth-modal-title">Account</h3>
+                    <button onclick="app.toggleAuthModal()" class="text-slate-400 hover:text-slate-600 p-2 -mr-2 rounded-full hover:bg-slate-100 transition touch-target">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Tab Navigation (hidden when logged in) -->
+                <div id="auth-tabs" class="flex border-b border-slate-200 bg-white">
+                    <button id="tab-login" onclick="app.showLoginForm()"
+                        class="flex-1 py-3 sm:py-4 text-sm sm:text-base font-semibold text-teal-600 border-b-2 border-teal-600 transition-all touch-target">
+                        <i class="fa-solid fa-right-to-bracket mr-2"></i>Login
+                    </button>
+                    <button id="tab-register" onclick="app.showRegisterForm()"
+                        class="flex-1 py-3 sm:py-4 text-sm sm:text-base font-semibold text-slate-400 border-b-2 border-transparent hover:text-slate-600 transition-all touch-target">
+                        <i class="fa-solid fa-user-plus mr-2"></i>Register
+                    </button>
+                </div>
+
+                <div class="p-4 sm:p-6 overflow-y-auto bg-slate-50 flex-1">
+                    <!-- Login Form -->
+                    <div id="login-form">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Email / Gmail</label>
+                            <input type="email" id="login-email" placeholder="Enter your email"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                            <input type="password" id="login-password" placeholder="Enter your password"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div id="login-error" class="text-red-500 text-sm mb-4 hidden p-3 bg-red-50 rounded-lg border border-red-200"></div>
+                        <button onclick="app.handleLogin()" id="login-submit-btn"
+                            class="w-full bg-teal-600 text-white py-3.5 sm:py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl text-base sm:text-lg touch-target">
+                            <i class="fa-solid fa-right-to-bracket mr-2"></i>Login
+                        </button>
+                    </div>
+
+                    <!-- Register Form -->
+                    <div id="register-form" class="hidden">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Username / Name</label>
+                            <input type="text" id="register-username" placeholder="Enter your name"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Email / Gmail</label>
+                            <input type="email" id="register-email" placeholder="Enter your Gmail or email"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+                            <input type="password" id="register-password" placeholder="Create a password (min 6 characters)"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-slate-700 mb-1.5">Confirm Password</label>
+                            <input type="password" id="register-confirm-password" placeholder="Confirm your password"
+                                class="w-full px-4 py-3 sm:py-3.5 border border-slate-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-teal-500 text-base bg-white shadow-sm">
+                        </div>
+                        <div id="register-error" class="text-red-500 text-sm mb-4 hidden p-3 bg-red-50 rounded-lg border border-red-200"></div>
+                        <div id="register-success" class="text-green-600 text-sm mb-4 hidden p-3 bg-green-50 rounded-lg border border-green-200"></div>
+                        <button onclick="app.handleRegister()" id="register-submit-btn"
+                            class="w-full bg-teal-600 text-white py-3.5 sm:py-4 rounded-xl font-bold hover:bg-teal-700 transition shadow-lg hover:shadow-xl text-base sm:text-lg touch-target">
+                            <i class="fa-solid fa-user-plus mr-2"></i>Create Account
+                        </button>
+                    </div>
+
+                    <!-- User Profile (shown when logged in) -->
+                    <div id="user-profile" class="hidden">
+                        <div class="text-center mb-6">
+                            <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-teal-400 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+                                <i class="fa-solid fa-user text-white text-3xl sm:text-4xl"></i>
+                            </div>
+                            <p class="text-slate-800 font-bold text-lg sm:text-xl" id="user-username-display">Username</p>
+                            <p class="text-slate-500 text-sm sm:text-base" id="user-email-display">user@example.com</p>
+                        </div>
+                        <div class="bg-white rounded-xl p-4 mb-4 border border-slate-200 shadow-sm">
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-600 text-sm sm:text-base">Total Journeys</span>
+                                <span class="font-bold text-teal-600 text-lg sm:text-xl" id="user-journey-count">0</span>
+                            </div>
+                        </div>
+                        <button onclick="app.handleLogout()"
+                            class="w-full bg-red-500 text-white py-3.5 sm:py-4 rounded-xl font-bold hover:bg-red-600 transition shadow-lg text-base sm:text-lg touch-target">
+                            <i class="fa-solid fa-right-from-bracket mr-2"></i>Logout
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -1070,12 +1176,14 @@
                     activeStations: [],
                     animationFrameId: null,
                     isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait'
+                    orientation: window.innerWidth > window.innerHeight ? 'landscape' : 'portrait',
+                    currentUser: null
                 };
                 this.map = null;
                 this.routeLayers = { border: null, main: null, dashed: null, marker: null, startMarker: null, endMarker: null };
                 this.init();
                 this.setupMobileListeners();
+                this.checkAuthState();
             }
 
             setupMobileListeners() {
@@ -1717,10 +1825,259 @@
                 alert(TRANSLATIONS[lang].arrived);
                 location.reload();
             }
-            saveHistory(trip) { let history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); history.unshift(trip); localStorage.setItem('railFocusHistory', JSON.stringify(history)); }
-            loadHistory() { const history = JSON.parse(localStorage.getItem('railFocusHistory') || '[]'); const list = document.getElementById('history-list'); if (history.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>'; return; } list.innerHTML = history.map(h => `<div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center"><div><div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div><div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div></div><div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div></div>`).join(''); }
+            saveHistory(trip) {
+                // Save to localStorage
+                let history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+                history.unshift(trip);
+                localStorage.setItem('travel_history', JSON.stringify(history));
+            }
+            loadHistory() {
+                const list = document.getElementById('history-list');
+                let history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+
+                if (history.length === 0) {
+                    list.innerHTML = '<p class="text-center text-slate-400 text-sm py-8">No journeys recorded yet.</p>';
+                    return;
+                }
+                list.innerHTML = history.map(h => `<div class="bg-white p-3 rounded shadow-sm border-l-4 border-teal-500 flex justify-between items-center"><div><div class="font-bold text-slate-700 text-sm">${h.route || 'Unknown Route'}</div><div class="text-xs text-slate-500">${h.date || ''} • Seat ${h.seat || '-'}</div></div><div class="text-lg font-mono font-bold text-teal-600">${h.duration || 0}m</div></div>`).join('');
+            }
             toggleHistory() { document.getElementById('history-modal').classList.toggle('hidden'); }
             abandonTrip() { if (confirm(TRANSLATIONS[this.state.language].confirmStop)) { cancelAnimationFrame(this.state.animationFrameId); location.reload(); } }
+
+            // --- Authentication Methods ---
+            checkAuthState() {
+                // Check for stored user in localStorage
+                try {
+                    const storedUser = localStorage.getItem('currentUser');
+                    if (storedUser) {
+                        this.state.currentUser = JSON.parse(storedUser);
+                        this.updateAuthUI(this.state.currentUser);
+                    } else {
+                        this.updateAuthUI(null);
+                    }
+                } catch (err) {
+                    console.error('Auth check error:', err);
+                    this.updateAuthUI(null);
+                }
+            }
+
+            updateAuthButton() {
+                this.updateAuthUI(this.state.currentUser);
+            }
+
+            updateAuthUI(user) {
+                const authBtnText = document.getElementById('auth-btn-text');
+                const authBtn = document.getElementById('auth-btn');
+                const authBtnIcon = authBtn.querySelector('i');
+
+                if (user) {
+                    authBtnText.textContent = user.username || user.email.split('@')[0];
+                    authBtnIcon.className = 'fa-solid fa-circle-user md:mr-2';
+                    authBtn.classList.add('text-teal-400');
+                } else {
+                    authBtnText.textContent = 'Login';
+                    authBtnIcon.className = 'fa-solid fa-user md:mr-2';
+                    authBtn.classList.remove('text-teal-400');
+                }
+            }
+
+            toggleAuthModal() {
+                const modal = document.getElementById('auth-modal');
+                modal.classList.toggle('hidden');
+
+                if (!modal.classList.contains('hidden')) {
+                    // Show appropriate form based on login state
+                    if (this.state.currentUser) {
+                        this.showUserProfile();
+                    } else {
+                        this.showLoginForm();
+                    }
+                }
+            }
+
+            showLoginForm() {
+                document.getElementById('login-form').classList.remove('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                document.getElementById('user-profile').classList.add('hidden');
+                document.getElementById('auth-tabs').classList.remove('hidden');
+                document.getElementById('auth-modal-title').textContent = 'Account';
+                // Update tab styling
+                document.getElementById('tab-login').classList.add('text-teal-600', 'border-teal-600');
+                document.getElementById('tab-login').classList.remove('text-slate-400', 'border-transparent');
+                document.getElementById('tab-register').classList.remove('text-teal-600', 'border-teal-600');
+                document.getElementById('tab-register').classList.add('text-slate-400', 'border-transparent');
+                this.clearAuthErrors();
+            }
+
+            showRegisterForm() {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.remove('hidden');
+                document.getElementById('user-profile').classList.add('hidden');
+                document.getElementById('auth-tabs').classList.remove('hidden');
+                document.getElementById('auth-modal-title').textContent = 'Account';
+                // Update tab styling
+                document.getElementById('tab-register').classList.add('text-teal-600', 'border-teal-600');
+                document.getElementById('tab-register').classList.remove('text-slate-400', 'border-transparent');
+                document.getElementById('tab-login').classList.remove('text-teal-600', 'border-teal-600');
+                document.getElementById('tab-login').classList.add('text-slate-400', 'border-transparent');
+                this.clearAuthErrors();
+            }
+
+            async showUserProfile() {
+                document.getElementById('login-form').classList.add('hidden');
+                document.getElementById('register-form').classList.add('hidden');
+                document.getElementById('user-profile').classList.remove('hidden');
+                document.getElementById('auth-tabs').classList.add('hidden');
+                document.getElementById('auth-modal-title').textContent = 'Profile';
+
+                if (this.state.currentUser) {
+                    document.getElementById('user-username-display').textContent = this.state.currentUser.username || 'User';
+                    document.getElementById('user-email-display').textContent = this.state.currentUser.email;
+
+                    // Count journeys from localStorage
+                    try {
+                        const history = JSON.parse(localStorage.getItem('travel_history') || '[]');
+                        document.getElementById('user-journey-count').textContent = history.length;
+                    } catch (err) {
+                        document.getElementById('user-journey-count').textContent = '0';
+                    }
+                }
+            }
+
+            clearAuthErrors() {
+                document.getElementById('login-error').classList.add('hidden');
+                document.getElementById('register-error').classList.add('hidden');
+                document.getElementById('register-success').classList.add('hidden');
+            }
+
+            async handleLogin() {
+                const email = document.getElementById('login-email').value.trim();
+                const password = document.getElementById('login-password').value;
+
+                if (!email || !password) {
+                    this.showError('login-error', 'Please enter both email and password.');
+                    return;
+                }
+
+                const loginBtn = document.getElementById('login-submit-btn');
+                const originalText = loginBtn.innerHTML;
+                loginBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Logging in...';
+                loginBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'login', email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        this.showError('login-error', data.error || 'Login failed');
+                        return;
+                    }
+
+                    // Save user to localStorage and state
+                    this.state.currentUser = data.user;
+                    localStorage.setItem('currentUser', JSON.stringify(data.user));
+                    this.updateAuthButton();
+
+                    // Success - close modal
+                    this.toggleAuthModal();
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-password').value = '';
+                } catch (err) {
+                    console.error('Login error:', err);
+                    this.showError('login-error', 'An error occurred during login. Please try again.');
+                } finally {
+                    loginBtn.innerHTML = originalText;
+                    loginBtn.disabled = false;
+                }
+            }
+
+            async handleRegister() {
+                const username = document.getElementById('register-username').value.trim();
+                const email = document.getElementById('register-email').value.trim();
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+
+                if (!username) {
+                    this.showError('register-error', 'Please enter your name.');
+                    return;
+                }
+
+                if (!email || !password) {
+                    this.showError('register-error', 'Please enter both email and password.');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    this.showError('register-error', 'Password must be at least 6 characters.');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    this.showError('register-error', 'Passwords do not match.');
+                    return;
+                }
+
+                const registerBtn = document.getElementById('register-submit-btn');
+                const originalText = registerBtn.innerHTML;
+                registerBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Creating account...';
+                registerBtn.disabled = true;
+
+                try {
+                    const response = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'register', username, email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!data.success) {
+                        this.showError('register-error', data.error || 'Registration failed');
+                        return;
+                    }
+
+                    // Show success message
+                    document.getElementById('register-error').classList.add('hidden');
+                    const successEl = document.getElementById('register-success');
+                    successEl.textContent = 'Account created successfully! You can now login.';
+                    successEl.classList.remove('hidden');
+
+                    // Clear form
+                    document.getElementById('register-username').value = '';
+                    document.getElementById('register-email').value = '';
+                    document.getElementById('register-password').value = '';
+                    document.getElementById('register-confirm-password').value = '';
+
+                    // Auto switch to login after 2 seconds
+                    setTimeout(() => {
+                        this.showLoginForm();
+                    }, 2000);
+                } catch (err) {
+                    console.error('Register error:', err);
+                    this.showError('register-error', 'An error occurred during registration. Please try again.');
+                } finally {
+                    registerBtn.innerHTML = originalText;
+                    registerBtn.disabled = false;
+                }
+            }
+
+            handleLogout() {
+                this.state.currentUser = null;
+                localStorage.removeItem('currentUser');
+                this.updateAuthButton();
+                this.toggleAuthModal();
+            }
+
+            showError(elementId, message) {
+                const errorEl = document.getElementById(elementId);
+                errorEl.textContent = message;
+                errorEl.classList.remove('hidden');
+            }
         };
 
         const app = new App();
